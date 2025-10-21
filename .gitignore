@@ -2,11 +2,4 @@ node_modules
 /docs/.vuepress/.cache/
 /docs/.vuepress/.temp/
 /package-lock.json
-.idea/.gitignore
-.idea/encodings.xml
-.idea/misc.xml
-.idea/modules.xml
-.idea/nanxu-ui.iml
-.idea/vcs.xml
-.idea/workspace.xml
-.idea/inspectionProfiles/Project_Default.xml
+.idea/
