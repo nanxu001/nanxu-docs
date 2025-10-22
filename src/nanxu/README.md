@@ -1,9 +1,7 @@
 ---
-title: 南絮
+title: Nanxu
 icon: laptop-code
 index: false
-category:
-  - 使用指南
 ---
 
 <Catalog />

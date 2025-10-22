@@ -5,7 +5,7 @@ export default sidebar({
     "",
     "portfolio",
     {
-      text: "南絮",
+      text: "Nanxu",
       icon: "book",
       prefix: "nanxu/",
       link: "nanxu/",
