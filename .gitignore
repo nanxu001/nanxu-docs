@@ -1,5 +1,4 @@
 node_modules
-/docs/.vuepress/.cache/
-/docs/.vuepress/.temp/
-/package-lock.json
-.idea/
+.idea
+src/.vuepress/.cache
+src/.vuepress/.temp
