@@ -7,7 +7,7 @@ export default hopeTheme({
   hostname: "https://vuepress-theme-hope-docs-demo.netlify.app",
 
   author: {
-    name: "Mr.Hope",
+    name: "Nanxu",
     url: "https://mister-hope.com",
   },
 
@@ -19,6 +19,7 @@ export default hopeTheme({
 
   // 导航栏
   navbar,
+  fullscreen: true,
 
   // 侧边栏
   sidebar,

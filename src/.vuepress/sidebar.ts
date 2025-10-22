@@ -5,6 +5,13 @@ export default sidebar({
     "",
     "portfolio",
     {
+      text: "南絮",
+      icon: "book",
+      prefix: "nanxu/",
+      link: "nanxu/",
+      children: "structure"
+    },
+    {
       text: "案例",
       icon: "laptop-code",
       prefix: "demo/",
