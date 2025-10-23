@@ -1,6 +1,6 @@
 ---
 title: Nanxu
-icon: laptop-code
+icon: book
 index: false
 ---
 

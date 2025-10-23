@@ -8,10 +8,10 @@ export default hopeTheme({
 
   author: {
     name: "Nanxu",
-    url: "https://mister-hope.com",
+    /* url: "https://mister-hope.com", */
   },
 
-  logo: "https://theme-hope-assets.vuejs.press/logo.svg",
+  logo: "logo.png",
 
   repo: "nanxu001/nanxu-ui",
 
