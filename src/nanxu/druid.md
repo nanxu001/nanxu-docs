@@ -39,10 +39,10 @@ spring:
       driver-class-name: com.mysql.cj.jdbc.Driver
       url: jdbc:mysql://localhost:3306/nanxu?characterEncoding=utf8&serverTimezone=UTC
       username: root
-      password: V3oOdcwPpI7zy9n+aBe0tr7pgEFancxlnNpdRU2RSSxsZ4j2QdpbtfdG0qMPWPrJfXcTOStkExKT74TqaJmj2A==
+      password: ${spring.datasource.druid.password}
       # AOP 监控扫描路径
       aop-patterns: com.nanxu.service.*, com.nanxu.controller.*
-      connection-properties: config.decrypt=true;config.decrypt.key=MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAIAtpSsKnDlQ/Z9DjDH55QNVTi4KOG6BrHdu5QticmjkuBe/D2P5UPVttZWd/0Xm4FjW1QdKkSORV70cmml08cECAwEAAQ==
+      connection-properties: config.decrypt=true;config.decrypt.key=${spring.datasource.druid.connection-properties.config.decrypt.key}
       # 初始化连接池大小
       initial-size: 5
       # 最小空闲连接数
@@ -98,21 +98,25 @@ spring:
 ```
 
 ::: info
-1. `type` com.alibaba.druid.pool.DruidDataSource：指定使用 Druid 连接池。
-2. `initial-size` 初始化连接池大小，即连接池启动时创建的初始化连接数。
-3. `min-idle` 最小连接池数量，连接池中保持的最小空闲连接数。
-4. `max-active` 最大连接池数量，连接池中允许的最大活动连接数。
-5. `max-wait` 连接时最大等待时间，当连接池中的连接已经用完时，等待从连接池获取连接的最长时间，单位是毫秒。
-6. `test-while-idle` 连接空闲时是否执行检查。
-7. `time-between-eviction-runs-millis` 配置多久进行一次检测，检测需要关闭的连接，单位是毫秒。
-8. `min-evictable-idle-time-millis` 一个连接在连接池中最小生存的时间，单位是毫秒。
-9. `max-evictable-idle-time-millis` 一个连接在连接池中最大生存的时间，单位是毫秒。
-10. `validation-query` 测试连接是否可用的查询 SQL。
-11. `test-on-borrow` 连接从连接池获取时是否测试连接的可用性。
-12. `test-on-return` 连接返回连接池时是否测试连接的可用性。
-13. `pool-prepared-statements` 是否缓存 PreparedStatement，默认为 false。每次执行SQL需要重新编译。
-14. `web-stat-filter` 用于配置 Druid 的 Web 监控功能。在这里，enabled 表示是否开启 Web 监控功能。如果设置为 true，就可以通过浏览器访问 Druid 的监控页面。
-15. `stat-view-servlet` 配置 Druid 的监控后台访问路径、登录用户名和密码。
+1. `password` 配置加密后的密码
+2. `connectionProperties` 配置连接属性，在 Druid 连接池中，如果我们的密码已经经过了加密处理，就需要在连接属性中配置解密相关的参数，以便 Druid 能够正确解密密码，然后连接到数据库。
+    - `config.decrypt=true` 表示开启密码解密功能。
+    - `config.decrypt.key` 是用于解密的密钥，即上面用jar包生成的公钥。
+3. `type` com.alibaba.druid.pool.DruidDataSource：指定使用 Druid 连接池。
+4. `initial-size` 初始化连接池大小，即连接池启动时创建的初始化连接数。
+5. `min-idle` 最小连接池数量，连接池中保持的最小空闲连接数。
+6. `max-active` 最大连接池数量，连接池中允许的最大活动连接数。
+7. `max-wait` 连接时最大等待时间，当连接池中的连接已经用完时，等待从连接池获取连接的最长时间，单位是毫秒。
+8. `test-while-idle` 连接空闲时是否执行检查。
+9. `time-between-eviction-runs-millis` 配置多久进行一次检测，检测需要关闭的连接，单位是毫秒。
+10. `min-evictable-idle-time-millis` 一个连接在连接池中最小生存的时间，单位是毫秒。
+11. `max-evictable-idle-time-millis` 一个连接在连接池中最大生存的时间，单位是毫秒。
+12. `validation-query` 测试连接是否可用的查询 SQL。
+13. `test-on-borrow` 连接从连接池获取时是否测试连接的可用性。
+14. `test-on-return` 连接返回连接池时是否测试连接的可用性。
+15. `pool-prepared-statements` 是否缓存 PreparedStatement，默认为 false。每次执行SQL需要重新编译。
+16. `web-stat-filter` 用于配置 Druid 的 Web 监控功能。在这里，enabled 表示是否开启 Web 监控功能。如果设置为 true，就可以通过浏览器访问 Druid 的监控页面。
+17. `stat-view-servlet` 配置 Druid 的监控后台访问路径、登录用户名和密码。
 
     - `enabled` 表示是否开启监控后台功能。
 
@@ -120,7 +124,7 @@ spring:
 
     - `login-username` 和 `login-password` 分别指定了监控后台的登录用户名和密码，用于访问监控后台时的身份验证。
 
-16. `filter` 用于配置 Druid 的过滤器，包括统计过滤器和防火墙过滤器。
+18. `filter` 用于配置 Druid 的过滤器，包括统计过滤器和防火墙过滤器。
 
     - `config`: 用于配置 Druid 连接池的一些额外功能，比如密码解密等。
 
