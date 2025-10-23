@@ -98,7 +98,7 @@ spring:
 ```
 
 ::: info
-1. `password` 配置加密后的密码
+1. `password` 配置加密后的密码。
 2. `connectionProperties` 配置连接属性，在 Druid 连接池中，如果我们的密码已经经过了加密处理，就需要在连接属性中配置解密相关的参数，以便 Druid 能够正确解密密码，然后连接到数据库。
     - `config.decrypt=true` 表示开启密码解密功能。
     - `config.decrypt.key` 是用于解密的密钥，即上面用jar包生成的公钥。
