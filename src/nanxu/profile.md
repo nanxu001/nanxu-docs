@@ -1,6 +1,6 @@
 ---
-title: Yml
-icon: file
+title: SpringBoot多环境配置
+icon: fab:fa-envira
 ---
 通过在`pom.xml`中配置Profile，可以便捷地实现不同运行环境间的切换。
 ## Maven配置
@@ -33,6 +33,7 @@ spring:
 ```
 ## 环境切换操作
 完成配置后，在Maven中选择对应环境Profile，刷新Maven项目并重新启动服务或执行打包操作，即可实现环境切换。
+
 ![选择环境](/assets/image/nanxu/selectEnvironment.png)
 ::: important
 刷新Maven项目是环境切换的关键步骤，必须执行。

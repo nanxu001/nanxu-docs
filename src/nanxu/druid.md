@@ -1,5 +1,5 @@
 ---
-title: Druid
+title: Druid数据源
 icon: database
 ---
 ## 1.导入Druid
