@@ -132,3 +132,33 @@ spring:
 
     - `wall` 配置 Druid 的防火墙过滤器。防火墙用于防止 SQL 注入攻击。在这里，config 配置了防火墙的规则，multi-statement-allow 表示是否允许执行多条 SQL 语句。
 :::
+
+## 4.配置拦截器
+
+在拦截器中放行`/druid/**`
+
+```java
+@Bean
+public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    return http
+        // 基于 token，不需要 csrf
+        .csrf(AbstractHttpConfigurer::disable)
+        // 开启跨域以便前端调用接口
+        .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+        .authorizeHttpRequests(authorize -> authorize
+                // 指定某些接口不需要通过验证即可访问。登录接口肯定是不需要认证的
+                .requestMatchers("/admin/system/index/login").permitAll()
+                // 静态资源，可匿名访问
+                .requestMatchers(HttpMethod.GET, "/").permitAll()
+                .requestMatchers(HttpMethod.GET, "/**.html").permitAll()
+                .requestMatchers(HttpMethod.GET, "/**.css").permitAll()
+                .requestMatchers(HttpMethod.GET, "/**.js").permitAll()
+                .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/druid/**").permitAll()
+                // 其它所有接口需要认证才能访问
+                .anyRequest().authenticated()
+        )
+        // 基于 token，不需要 session
+        .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .build();
+}
+```
