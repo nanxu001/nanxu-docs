@@ -2,9 +2,10 @@
 title: Swagger3
 icon: far:fa-file-lines
 ---
-## 1.引入Swagger3
 
-通过Maven依赖引入Swagger3相关组件，为项目提供API文档生成功能支持。
+## 1.引入 Swagger3
+
+通过 Maven 依赖引入 Swagger3 相关组件，为项目提供 API 文档生成功能支持。
 
 ```xml title="pom.xml"
 <dependency>
@@ -16,7 +17,7 @@ icon: far:fa-file-lines
 
 ## 2.配置
 
-创建Swagger配置类，自定义API文档的基本信息和元数据。
+创建 Swagger 配置类，自定义 API 文档的基本信息和元数据。
 
 ```java title="SwaggerConfig.java"
 @Configuration
@@ -38,7 +39,7 @@ public class SwaggerConfig {
 
 ## 3.指定访问路径
 
-配置API文档和UI界面的访问路径，可根据实际需求进行自定义设置。
+配置 API 文档和 UI 界面的访问路径，可根据实际需求进行自定义设置。
 
 ```yaml title="application.yml"
 springdoc:
@@ -53,9 +54,10 @@ springdoc:
     # 自定义路径，默认为"/swagger-ui/index.html"
     path: /swagger-ui/index.html
 ```
+
 ## 4.配置拦截器
 
-在拦截器中放行`/swagger-ui/**`和`/v3/api-docs/**`，确保无需认证即可访问API文档界面。
+在拦截器中放行`/swagger-ui/**`和`/v3/api-docs/**`，确保无需认证即可访问 API 文档界面。
 
 ```java
 @Bean
