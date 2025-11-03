@@ -1,6 +1,6 @@
 ---
 title: Redis
-icon: far:fa-file-lines
+icon: fas:fa-server
 ---
 
 ## 1.引入 Redis 依赖

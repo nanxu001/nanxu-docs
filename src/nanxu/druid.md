@@ -128,13 +128,13 @@ spring:
 
 18. `filter` 用于配置 Druid 的过滤器，包括统计过滤器和防火墙过滤器。
 
-        - `config`: 用于配置 Druid 连接池的一些额外功能，比如密码解密等。
+    - `config`: 用于配置 Druid 连接池的一些额外功能，比如密码解密等。
 
-        - `stat` 配置 Druid 的统计过滤器。enabled 表示是否开启统计功能，log-slow-sql 表示是否开启慢 SQL 记录，slow-sql-millis 指定了执行时间超过多少毫秒的 SQL 语句会被认为是慢 SQL，merge-sql 表示是否开启 SQL 合并功能。
+    - `stat` 配置 Druid 的统计过滤器。enabled 表示是否开启统计功能，log-slow-sql 表示是否开启慢 SQL 记录，slow-sql-millis 指定了执行时间超过多少毫秒的 SQL 语句会被认为是慢 SQL，merge-sql 表示是否开启 SQL 合并功能。
 
-        - `wall` 配置 Druid 的防火墙过滤器。防火墙用于防止 SQL 注入攻击。在这里，config 配置了防火墙的规则，multi-statement-allow 表示是否允许执行多条 SQL 语句。
-
-    :::
+    - `wall` 配置 Druid 的防火墙过滤器。防火墙用于防止 SQL 注入攻击。在这里，config 配置了防火墙的规则，multi-statement-allow 表示是否允许执行多条 SQL 语句。
+    
+:::
 
 ## 4.配置拦截器
 
