@@ -1,11 +1,11 @@
 ---
-title: Druid数据源
+title: Druid线程池
 icon: database
 ---
 
 ## 1.导入 Druid
 
-SpringBoot3 使用 druid-spring-boot-3-starter，SpringBoot2 使用 druid-spring-boot-starter
+SpringBoot3 使用 `druid-spring-boot-3-starter`，SpringBoot2 使用 `druid-spring-boot-starter`。
 
 ```xml title="pom.xml"
 <dependency>
@@ -19,9 +19,9 @@ SpringBoot3 使用 druid-spring-boot-3-starter，SpringBoot2 使用 druid-spring
 
 如果要配置加密后的数据库密码，需要先生成密码和密钥，这里只会用到公钥和加密后的密码
 
-1. 找到 maven 仓库下 com/alibaba/druid 对应版本的 jar
+1. 找到 maven 仓库下 `com/alibaba/druid` 对应版本的 jar。
 
-2. 执行 java -cp druid-1.2.27.jar com.alibaba.druid.filter.config.ConfigTools 123456
+2. 执行 `java -cp druid-1.2.27.jar com.alibaba.druid.filter.config.ConfigTools 123456`。
 
 3. 生成后的密钥为
 
@@ -99,7 +99,6 @@ spring:
 ```
 
 ::: info
-
 1.  `password` 配置加密后的密码。
 2.  `connectionProperties` 配置连接属性，在 Druid 连接池中，如果我们的密码已经经过了加密处理，就需要在连接属性中配置解密相关的参数，以便 Druid 能够正确解密密码，然后连接到数据库。
     - `config.decrypt=true` 表示开启密码解密功能。
@@ -133,12 +132,11 @@ spring:
     - `stat` 配置 Druid 的统计过滤器。enabled 表示是否开启统计功能，log-slow-sql 表示是否开启慢 SQL 记录，slow-sql-millis 指定了执行时间超过多少毫秒的 SQL 语句会被认为是慢 SQL，merge-sql 表示是否开启 SQL 合并功能。
 
     - `wall` 配置 Druid 的防火墙过滤器。防火墙用于防止 SQL 注入攻击。在这里，config 配置了防火墙的规则，multi-statement-allow 表示是否允许执行多条 SQL 语句。
-    
 :::
 
-## 4.配置拦截器
+## 4.配置过滤器
 
-在拦截器中放行`/druid/**`
+在过滤器中放行`/druid/**`
 
 ```java
 @Bean
@@ -165,3 +163,9 @@ public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         .build();
 }
 ```
+
+## 5.SQL 监控
+
+在过滤器中放行后访问 `/druid/index.html` 即可查看 SQL 监控信息。
+
+![SQL 监控](/assets/image/nanxu/druidMonitor.png)

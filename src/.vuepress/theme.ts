@@ -13,7 +13,7 @@ export default hopeTheme({
 
   logo: "logo.png",
 
-  repo: "nanxu001/nanxu-ui",
+  repo: "nanxu001/nanxu-docs",
 
   // 文档在仓库中的目录
   docsDir: "src",
