@@ -378,8 +378,8 @@ public class SysUser implements Serializable {
 
 ::: important
 
-1. 默认情况下，FastJSON2 会通过 `getter` 方法来序列化对象属性，对于重写的字段需要添加 `@JSONField(serialize = false)` 注解以取消序列化这些不必要的属性。也可以在[Redis 序列化器](/nanxu/redis.html#_2-3-fastjson2-序列化器实现)中配置 `JSONWriter.Feature.FieldBased` 特性，基于字段而非 `getter` 方法进行序列化，提高性能和一致性。
-2. 在使用 FastJSON 反序列化 Redis 中的对象时，由于 DevTools 使用了不同的类加载器（RestartClassLoader）加载应用类，而 FastJSON 使用默认类加载器，这可能导致反序列化后得到的是 `JSONObject` 而非期望的对象类型。在[Redis 序列化器](/nanxu/redis.html#_2-3-fastjson2-序列化器实现)中已配置 `JSONWriter.Feature.WriteClassName` 特性，通过写入类名信息确保反序列化时能正确还原对象类型。此外，也可以从 Redis 中查询到数据后，先通过 `toString()` 方法转换为字符串，再使用 `JSONObject.parseObject()` 来避免反序列化失败的问题。
+1. 默认情况下，FastJSON2 会通过 `getter` 方法来序列化对象属性，对于重写的字段需要添加 `@JSONField(serialize = false)` 注解以取消序列化这些不必要的属性。也可以在[Redis 序列化器](/docs/nanxu/redis.html#_2-2-redis-序列化配置)中配置 `JSONWriter.Feature.FieldBased` 特性，基于字段而非 `getter` 方法进行序列化，提高性能和一致性。
+2. 在使用 FastJSON 反序列化 Redis 中的对象时，由于 DevTools 使用了不同的类加载器（RestartClassLoader）加载应用类，而 FastJSON 使用默认类加载器，这可能导致反序列化后得到的是 `JSONObject` 而非期望的对象类型。在[Redis 序列化器](/docs/nanxu/redis.html#_2-2-redis-序列化配置)中已配置 `JSONWriter.Feature.WriteClassName` 特性，通过写入类名信息确保反序列化时能正确还原对象类型。此外，也可以从 Redis 中查询到数据后，先通过 `toString()` 方法转换为字符串，再使用 `JSONObject.parseObject()` 来避免反序列化失败的问题。
 :::
 
 ```java title="LoginUser.java"
