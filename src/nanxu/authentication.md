@@ -3,7 +3,7 @@ title: Spring Security认证
 icon: fas:fa-user-lock
 ---
 
-本项目使用 Spring Security 实现认证授权功能，结合 JWT 和 Redis 实现无状态认证机制。1
+本项目使用 Spring Security 实现认证授权功能，结合 JWT 和 Redis 实现无状态认证机制。
 
 ## 1.引入相关依赖
 
