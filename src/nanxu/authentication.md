@@ -40,6 +40,28 @@ icon: fas:fa-user-lock
 
 ### 2.1 JWT 认证流程
 
+```mermaid
+sequenceDiagram
+    participant 前端
+    participant 服务器
+    participant 数据库
+    participant Redis
+
+    前端->>服务器: 1. 发送登录请求(用户名+密码)
+    服务器->>数据库: 2. 查询用户信息
+    数据库-->>服务器: 3. 返回用户数据
+    服务器->>服务器: 4. 验证密码(BCrypt匹配)
+    服务器->>Redis: 5. 缓存用户信息
+    服务器->>前端: 6. 返回JWT Token
+    
+    前端->>服务器: 7. 携带Token访问受保护接口
+    服务器->>Redis: 8. 验证Token有效性
+    Redis-->>服务器: 9. 返回用户信息
+    服务器->>数据库: 10. 获取资源数据(如有需要)
+    数据库-->>服务器: 11. 返回资源数据
+    服务器-->>前端: 12. 返回接口响应数据
+```
+
 1. 前端携带用户名和密码访问服务器的登录接口。
 2. 服务器接收到请求后，会去数据库中查询对应的用户名和密码进行校验。
 3. 如果用户名和密码正确，服务器会使用用户名或用户 ID 生成一个 JWT Token。
@@ -49,6 +71,61 @@ icon: fas:fa-user-lock
 7. 如果有权限，则允许访问目标资源，并将响应信息返回给前端。
 
 ### 2.2 Spring Security 登录流程
+
+```mermaid
+sequenceDiagram
+    participant 前端
+    participant JwtAuthenticationTokenFilter
+    participant IndexController
+    participant SysUserService
+    participant AuthenticationManager
+    participant ProviderManager
+    participant DaoAuthenticationProvider
+    participant UserDetailsService
+    participant BCryptPasswordEncoder
+    participant TokenService
+    participant Redis
+
+    前端->>JwtAuthenticationTokenFilter: 发送登录请求(/index/login)
+    note right of JwtAuthenticationTokenFilter: 登录接口配置为anonymous()访问
+    JwtAuthenticationTokenFilter->>JwtAuthenticationTokenFilter: 检查Token(无Token)
+    JwtAuthenticationTokenFilter->>IndexController: 放行请求
+    IndexController->>SysUserService: 调用login方法
+    SysUserService->>SysUserService: 创建UsernamePasswordAuthenticationToken
+    SysUserService->>AuthenticationManager: authenticate认证
+    AuthenticationManager->>ProviderManager: 调用authenticate方法
+    ProviderManager->>ProviderManager: 遍历AuthenticationProvider
+    ProviderManager->>DaoAuthenticationProvider: 找到支持的Provider
+    DaoAuthenticationProvider->>DaoAuthenticationProvider: 调用authenticate方法
+    DaoAuthenticationProvider->>UserDetailsService: 调用loadUserByUsername
+    UserDetailsService->>UserDetailsService: 查询数据库用户信息
+    UserDetailsService-->>DaoAuthenticationProvider: 返回LoginUser对象
+    DaoAuthenticationProvider->>DaoAuthenticationProvider: 调用retrieveUser完成
+    DaoAuthenticationProvider->>DaoAuthenticationProvider: 执行preAuthenticationChecks.check
+    DaoAuthenticationProvider->>DaoAuthenticationProvider: 执行additionalAuthenticationChecks
+    DaoAuthenticationProvider->>BCryptPasswordEncoder: 验证密码(matches方法)
+    BCryptPasswordEncoder->>BCryptPasswordEncoder: 比较密码(checkpw方法)
+    BCryptPasswordEncoder-->>DaoAuthenticationProvider: 返回比对结果
+    DaoAuthenticationProvider-->>ProviderManager: 认证成功返回Authentication
+    ProviderManager-->>AuthenticationManager: 返回认证结果
+    AuthenticationManager-->>SysUserService: 返回认证对象
+    SysUserService->>TokenService: 调用createToken方法
+    TokenService->>Redis: 缓存LoginUser信息
+    Redis-->>TokenService: 缓存完成
+    TokenService-->>SysUserService: 返回生成的Token
+    SysUserService-->>IndexController: 返回Result结果
+    IndexController-->>JwtAuthenticationTokenFilter: 响应返回经过过滤器
+    note right of JwtAuthenticationTokenFilter: 响应中无Token，直接放行
+    JwtAuthenticationTokenFilter-->>前端: 返回Token给前端
+```
+
+::: tip
+Spring Security 登录流程涉及多个组件和步骤，对应的时序图较为复杂且篇幅较大，建议将其下载后放大查看以获得更好的阅读体验。此外，由于 VuePress Theme Hope 的代码块行高亮功能会在标题包含数字时自动高亮对应行号，为了避免干扰阅读，本文档已禁用该功能。所有需要设置断点的关键代码位置均已添加注释说明，请仔细查看相关代码块。
+
+Spring Security 的登录认证流程虽然涉及多个环节，但整体逻辑清晰，通过仔细阅读文档和时序图，并结合实际调试，可以很好地理解整个认证过程。文档下方已详细列出各个关键步骤和代码位置，便于开发者进行学习和调试。
+
+最后，作者本人也是初学者，整个流程是参考[网络文档](/docs/nanxu/authentication.html#_10-参考)并结合代码调试梳理而成，如有错误欢迎在git上评论或修改。
+:::
 
 1.由于登录接口在`SecurityConfig`中已配置为`anonymous()`访问权限，因此不会强制要求认证。同时登录请求不会携带 Token，所以在`JwtAuthenticationTokenFilter`中无法获取到用户信息，当前过滤器会直接放行进入下一个过滤器。
 2. 请求进入`IndexController`调用`SysUserService`，创建`UsernamePasswordAuthenticationToken`对象，封装前端传递的用户名和密码。
