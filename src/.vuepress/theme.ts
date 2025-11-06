@@ -85,7 +85,9 @@ export default hopeTheme({
     tasklist: true,
     vPre: true,
     highlighter: {
-      highlightLines: false
+      highlightLines: false,
+      notationDiff: true,
+      notationHighlight: true
     }
 
     // 取消注释它们如果你需要 TeX 支持
