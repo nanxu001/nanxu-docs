@@ -1059,11 +1059,10 @@ public class AuthenticationEntryPointImpl implements AuthenticationEntryPoint {
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
         int code = HttpStatus.UNAUTHORIZED.value();
-        String msg = "认证失败";
-        Result result = Result.error(code, msg);
+        Result result = Result.error(code, AUTHENTICATION_FAILED);
         response.setContentType("application/json;charset=UTF-8");
-        response.getWriter().write(JSON.toJSONString(result));
         response.setStatus(code);
+        response.getWriter().write(JSON.toJSONString(result));
     }
 }
 ```
