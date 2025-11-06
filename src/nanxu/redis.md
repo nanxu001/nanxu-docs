@@ -51,7 +51,7 @@ spring:
 
 ### 2.2 Redis 序列化配置
 
-默认情况下，`RedisTemplate` 仅支持 `RedisTemplate<String,String>`，只能存储字符串类型数据。通过自定义 `RedisTemplate` 并设置序列化器，可以实现任意对象的序列化存储。
+默认情况下，`RedisTemplate`仅支持`RedisTemplate<String,String>`，只能存储字符串类型数据。通过自定义`RedisTemplate`并设置序列化器，可以实现任意对象的序列化存储。
 
 ```java title="RedisConfig.java"
 @Configuration

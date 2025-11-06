@@ -1,5 +1,5 @@
 ---
-title: 认证授权
+title: Spring Security认证
 icon: fas:fa-user-lock
 ---
 
@@ -36,9 +36,216 @@ icon: fas:fa-user-lock
 </dependency>
 ```
 
-## 2.Spring Security 配置
+## 2.登录流程
 
-### 2.1 安全配置类
+### 2.1 JWT 认证流程
+
+1. 前端携带用户名和密码访问服务器的登录接口。
+2. 服务器接收到请求后，会去数据库中查询对应的用户名和密码进行校验。
+3. 如果用户名和密码正确，服务器会使用用户名或用户 ID 生成一个 JWT Token。
+4. 服务器将生成的 JWT Token 响应给前端。
+5. 用户登录成功后，前端在访问其他需要认证的接口时，需要在请求头中携带之前获取到的 Token。
+6. 服务器接收到带有 Token 的请求后，会解析 Token 获取用户 ID，根据用户 ID 获取用户的相关信息，判断是否有权访问目标资源。
+7. 如果有权限，则允许访问目标资源，并将响应信息返回给前端。
+
+### 2.2 Spring Security 登录流程
+
+1.由于登录接口在`SecurityConfig`中已配置为`anonymous()`访问权限，因此不会强制要求认证。同时登录请求不会携带 Token，所以在`JwtAuthenticationTokenFilter`中无法获取到用户信息，当前过滤器会直接放行进入下一个过滤器。
+2. 请求进入`IndexController`调用`SysUserService`，创建`UsernamePasswordAuthenticationToken`对象，封装前端传递的用户名和密码。
+3. `AuthenticationManager`接收`UsernamePasswordAuthenticationToken`，其具体实现类`ProviderManager`调用`authenticate()`方法进行认证处理。
+
+   ```java title="SysUserServiceImpl.login()"
+   @Override
+   public Result login(LoginDTO loginDTO) {
+       UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(loginDTO.getUsername(), loginDTO.getPassword());
+       Authentication authenticate;
+       try {
+           // // 断点打在下面这一行
+           authenticate = authenticationManager.authenticate(usernamePasswordAuthenticationToken);
+       } catch (AuthenticationException e) {
+           throw new RuntimeException(e.getMessage());
+       }
+
+       LoginUser loginUser = (LoginUser) authenticate.getPrincipal();
+
+       String token = tokenService.createToken(loginUser);
+
+       return Result.success(token);
+   }
+   ```
+
+4. `ProviderManager`管理多个`AuthenticationProvider`实现，遍历所有`AuthenticationProvider`找到能处理当前`authentication`的`provider`。
+
+   ```java title="ProviderManager.authenticate()关键代码"
+   for (AuthenticationProvider provider : getProviders()) {
+       if (provider.supports(authentication.getClass())) {
+           // 断点打在下面这一行
+           Authentication result = provider.authenticate(authentication);
+           if (result != null) {
+               return result;
+           }
+       }
+   }
+   ```
+
+5. `ProviderManager`找到`AbstractUserDetailsAuthenticationProvider`，该 provider 调用`authentication`方法，内部再调用抽象方法`retrieveUser()`，由其子类`DaoAuthenticationProvider`负责从数据库检索用户信息。
+
+   ```java title="AbstractUserDetailsAuthenticationProvider.authenticate()关键代码"
+   String username = determineUsername(authentication);
+   boolean cacheWasUsed = true;
+   UserDetails user = this.userCache.getUserFromCache(username);
+   if (user == null) {
+       cacheWasUsed = false;
+       try {
+           // 断点打在下面这一行
+           user = retrieveUser(username, (UsernamePasswordAuthenticationToken) authentication);
+       } catch (UsernameNotFoundException ex) {
+           this.logger.debug(LogMessage.format("Failed to find user '%s'", username));
+           if (!this.hideUserNotFoundExceptions) {
+               throw ex;
+           }
+           throw new BadCredentialsException(this.messages
+               .getMessage("AbstractUserDetailsAuthenticationProvider.badCredentials", "Bad credentials"));
+       }
+       Assert.notNull(user, "retrieveUser returned null - a violation of the interface contract");
+   }
+   ```
+
+6. `DaoAuthenticationProvider`调用`retrieveUser()`，获取配置的`UserDetailsService`，然后调用自定义实现的`loadUserByUsername()`方法查询数据库用户信息。
+
+   ```java title="DaoAuthenticationProvider.retrieveUser()关键代码"
+   try {
+       // 断点打在下面这一行
+       UserDetails loadedUser = this.getUserDetailsService().loadUserByUsername(username);
+       if (loadedUser == null) {
+           throw new InternalAuthenticationServiceException("UserDetailsService returned null, which is an interface contract violation");
+       }
+       return loadedUser;
+   }
+   ```
+
+7. `UserDetailsService`调用`loadUserByUsername()`方法，从数据库查询用户信息并封装成`LoginUser`对象。
+
+   ```java title="UserDetailsServiceImpl.loadUserByUsername()"
+   @Override
+   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+       SysUser sysUser = Db.lambdaQuery(SysUser.class).eq(SysUser::getUsername, username).one();
+
+       if (Objects.isNull(sysUser)) {
+           throw new UsernameNotFoundException("用户不存在");
+       }
+
+       if (sysUser.getStatus() == -1) {
+           throw new LockedException("账号已停用");
+       }
+
+       return new LoginUser(sysUser, Collections.emptySet());
+   }
+   ```
+
+8. 将用户信息封装到`LoginUser`后返回到`AbstractUserDetailsAuthenticationProvider`的`authentication`方法，继续执行后续验证流程。
+
+   ```java title="AbstractUserDetailsAuthenticationProvider.authenticate()关键代码"
+   try {
+           // 断点打在下面这两行
+   		this.preAuthenticationChecks.check(user);
+   		additionalAuthenticationChecks(user, (UsernamePasswordAuthenticationToken) authentication);
+   	}
+   	catch (AuthenticationException ex) {
+   		if (!cacheWasUsed) {
+   			throw ex;
+   		}
+   		// There was a problem, so try again after checking
+   		// we're using latest data (i.e. not from the cache)
+   		cacheWasUsed = false;
+   		user = retrieveUser(username, (UsernamePasswordAuthenticationToken) authentication);
+   		this.preAuthenticationChecks.check(user);
+   		additionalAuthenticationChecks(user, (UsernamePasswordAuthenticationToken) authentication);
+   	}
+   ```
+
+9. `this.preAuthenticationChecks.check(user)`内部会校验 [登录实体类](/docs/nanxu/authentication.html#_5-2-登录实体类) 中实现的`UserDetails`接口方法返回值，如检查账户是否被锁定、是否过期等状态。
+10. 抽象方法`additionalAuthenticationChecks()`会调用`DaoAuthenticationProvider`的具体实现。首先判断 [登录实体类](/docs/nanxu/authentication.html#_5-2-登录实体类) 中重写的`getPassword()`方法是否为空，然后调用`matches()`方法，按照 [Spring Security 配置](/docs/nanxu/authentication.html#_3-spring-security-配置) 中配置的密码加密方式进行密码匹配。
+
+    ```java title="DaoAuthenticationProvider.additionalAuthenticationChecks()"
+    protected void additionalAuthenticationChecks(UserDetails userDetails,
+            UsernamePasswordAuthenticationToken authentication) throws AuthenticationException {
+        if (authentication.getCredentials() == null) {
+            this.logger.debug("Failed to authenticate since no credentials provided");
+            throw new BadCredentialsException(this.messages
+                .getMessage("AbstractUserDetailsAuthenticationProvider.badCredentials", "Bad credentials"));
+        }
+
+        // 断点打在下面这一行
+        String presentedPassword = authentication.getCredentials().toString();
+        if (!this.passwordEncoder.get().matches(presentedPassword, userDetails.getPassword())) {
+            this.logger.debug("Failed to authenticate since password does not match stored value");
+            throw new BadCredentialsException(this.messages
+                .getMessage("AbstractUserDetailsAuthenticationProvider.badCredentials", "Bad credentials"));
+        }
+    }
+    ```
+
+11. 本项目配置的是`BCryptPasswordEncoder`，进入`matches()`方法后，先进行格式校验，验证密码是否符合 BCrypt 格式，之后进入`checkpw()`方法进行密码比对。
+
+    ```java title="BCryptPasswordEncoder.matches()"
+    @Override
+    public boolean matches(CharSequence rawPassword, String encodedPassword) {
+    	if (rawPassword == null) {
+    		throw new IllegalArgumentException("rawPassword cannot be null");
+    	}
+    	if (encodedPassword == null || encodedPassword.length() == 0) {
+    		this.logger.warn("Empty encoded password");
+    		return false;
+    	}
+    	if (!this.BCRYPT_PATTERN.matcher(encodedPassword).matches()) {
+    		this.logger.warn("Encoded password does not look like BCrypt");
+    		return false;
+    	}
+
+        // 断点打在下面这一行
+    	return BCrypt.checkpw(rawPassword.toString(), encodedPassword);
+    }
+    ```
+
+12. `checkpw()`方法接收两个参数：用户输入的未加密密码和数据库中存储的加密密码。将未加密密码转换为字节数组后传入`hashpwforcheck()`方法进行加密处理，最后通过`MessageDigest.isEqual()`方法安全地比较两个密码。
+
+    ```java title="BCrypt核心代码"
+    public static boolean checkpw(String plaintext, String hashed) {
+    	byte[] passwordb = plaintext.getBytes(StandardCharsets.UTF_8);
+        // 断点打在下面这一行
+    	return equalsNoEarlyReturn(hashed, hashpwforcheck(passwordb, hashed));
+    }
+    static boolean equalsNoEarlyReturn(String a, String b) {
+    	return MessageDigest.isEqual(a.getBytes(StandardCharsets.UTF_8), b.getBytes(StandardCharsets.UTF_8));
+    }
+    ```
+
+13. 密码比对成功后，认证流程逐层返回，最终回到`SysUserServiceImpl.login()`方法，从`authenticate`对象中获取`LoginUser`信息，然后调用`TokenService`生成 Token 并返回给前端。
+14. 响应返回时会再次经过`JwtAuthenticationTokenFilter`，但由于这是登录请求的响应，请求中尚未携带有效的 Token，因此无法获取到用户信息，过滤器会直接放行进入下一个过滤器。
+
+    ```java title="JwtAuthenticationTokenFilter.doFilterInternal()"
+    @Override
+    protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
+        LoginUser loginUser = tokenService.getLoginUser(request);
+
+        if (loginUser != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            tokenService.refreshToken(loginUser);
+
+            UsernamePasswordAuthenticationToken authenticationToken =
+                    new UsernamePasswordAuthenticationToken(loginUser, null, loginUser.getAuthorities());
+            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+        }
+
+        filterChain.doFilter(request, response);
+    }
+    ```
+
+15. 登录成功后，后续请求中前端会将 Token 存入请求头中。在`JwtAuthenticationTokenFilter`中获取用户信息，并将用户存入`SecurityContextHolder`，方便在业务代码中获取当前用户信息。
+
+## 3.Spring Security 配置
+
+### 3.1 安全配置类
 
 ```java title="SecurityConfig.java"
 @Configuration
@@ -136,7 +343,7 @@ public class SecurityConfig {
 }
 ```
 
-### 2.2 自定义 MD5 密码加密器
+### 3.2 自定义 MD5 密码加密器
 
 可以选择自定义密码加密方式来对用户密码进行加密处理。
 
@@ -168,9 +375,9 @@ public class CustomerMd5PasswordEncoder implements PasswordEncoder {
 }
 ```
 
-## 3.Token 管理
+## 4.Token 管理
 
-### 3.1 生成 secret
+### 4.1 生成 secret
 
 ```java title="SecretKeyGenerator.java"
 public class SecretKeyGenerator {
@@ -182,7 +389,7 @@ public class SecretKeyGenerator {
 }
 ```
 
-### 3.2 JWT 配置
+### 4.2 JWT 配置
 
 在`application.yml`中配置 JWT 密钥和 Token 过期时间(分钟)。
 
@@ -192,7 +399,7 @@ jwt:
   expireTime: 1440
 ```
 
-### 3.3 Token 服务类
+### 4.3 Token 服务类
 
 ```java title="TokenService.java"
 @Component
@@ -321,9 +528,9 @@ public class TokenService {
 }
 ```
 
-## 4.实体类
+## 5.实体类
 
-### 4.1 用户实体类
+### 5.1 用户实体类
 
 数据库中新建用户表，此类与数据库中表的字段相对应。
 
@@ -372,14 +579,13 @@ public class SysUser implements Serializable {
 }
 ```
 
-### 4.2 登录实体类
+### 5.2 登录实体类
 
 要使用 Spring Security 完成登录功能，需要一个实体类实现 UserDetails 接口，再将数据库中的实体存入此类。
 
 ::: important
-
-1. 默认情况下，FastJSON2 会通过 `getter` 方法来序列化对象属性，对于重写的字段需要添加 `@JSONField(serialize = false)` 注解以取消序列化这些不必要的属性。也可以在[Redis 序列化器](/docs/nanxu/redis.html#_2-2-redis-序列化配置)中配置 `JSONWriter.Feature.FieldBased` 特性，基于字段而非 `getter` 方法进行序列化，提高性能和一致性。
-2. 在使用 FastJSON 反序列化 Redis 中的对象时，由于 DevTools 使用了不同的类加载器（RestartClassLoader）加载应用类，而 FastJSON 使用默认类加载器，这可能导致反序列化后得到的是 `JSONObject` 而非期望的对象类型。在[Redis 序列化器](/docs/nanxu/redis.html#_2-2-redis-序列化配置)中已配置 `JSONWriter.Feature.WriteClassName` 特性，通过写入类名信息确保反序列化时能正确还原对象类型。此外，也可以从 Redis 中查询到数据后，先通过 `toString()` 方法转换为字符串，再使用 `JSONObject.parseObject()` 来避免反序列化失败的问题。
+1. 默认情况下，FastJSON2 会通过`getter`方法来序列化对象属性，对于重写的字段需要添加`@JSONField(serialize = false)`注解以取消序列化这些不必要的属性。也可以在[Redis 序列化器](/docs/nanxu/redis.html#_2-2-redis-序列化配置)中配置`JSONWriter.Feature.FieldBased`特性，基于字段而非`getter`方法进行序列化，提高性能和一致性。
+2. 在使用 FastJSON 反序列化 Redis 中的对象时，由于 DevTools 使用了不同的类加载器（RestartClassLoader）加载应用类，而 FastJSON 使用默认类加载器，这可能导致反序列化后得到的是`JSONObject`而非期望的对象类型。在[Redis 序列化器](/docs/nanxu/redis.html#_2-2-redis-序列化配置)中已配置`JSONWriter.Feature.WriteClassName`特性，通过写入类名信息确保反序列化时能正确还原对象类型。此外，也可以从 Redis 中查询到数据后，先通过`toString()`方法转换为字符串，再使用`JSONObject.parseObject()`来避免反序列化失败的问题。
 :::
 
 ```java title="LoginUser.java"
@@ -489,7 +695,7 @@ public class LoginUser implements UserDetails {
 }
 ```
 
-### 4.3 统一响应结果
+### 5.3 统一响应结果
 
 统一响应结果类，将状态码、提示信息、数据封装为 Result 对象返回给前端。
 
@@ -630,7 +836,7 @@ public class Result extends HashMap<String, Object> {
 }
 ```
 
-### 4.4 登录参数
+### 5.4 登录参数
 
 ```java title="LoginDTO.java"
 @Data
@@ -640,7 +846,7 @@ public class LoginDTO {
 }
 ```
 
-## 5.登录接口
+## 6.登录接口
 
 ```java title="IndexController.java"
 @Tag(name = "登录")
@@ -658,7 +864,7 @@ public class IndexController {
 }
 ```
 
-在 Service 中将前端传递的登录用户名和密码封装到 UsernamePasswordAuthenticationToken 中，再将其传递到 AuthenticationManager 进行认证，会调用  UserDetailsService 的 loadUserByUsername 方法查询数据库中的用户并封装到 LoginUser，生成 Token 后返回给前端。
+在 Service 中将前端传递的登录用户名和密码封装到 UsernamePasswordAuthenticationToken 中，再将其传递到 AuthenticationManager 进行认证，会调用 UserDetailsService 的 loadUserByUsername 方法查询数据库中的用户并封装到 LoginUser，生成 Token 后返回给前端。
 
 ```java title="SysUserServiceImpl.java"
 @Service
@@ -722,7 +928,7 @@ public class UserDetailServiceImpl implements UserDetailsService {
 }
 ```
 
-## 6.JWT 认证过滤器
+## 7.JWT 认证过滤器
 
 登录成功后，前端请求时会携带 Token，需要在过滤器中获取到 Token 并检查用户是否成功登录，同时需要在 SecurityConfig 中进行配置。如果没有从缓存中获取到用户，说明用户没有登录成功，则不会向 SecurityContextHolder 中存储用户信息，否则会先检查用户的过期时间是否小于 30 分钟，如果小于 30 分钟则会刷新 Token，并将用户信息保存到 SecurityContextHolder。
 
@@ -758,7 +964,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
 }
 ```
 
-## 7.认证失败处理器
+## 8.认证失败处理器
 
 如果上一步过滤器中没有获取到用户，则会进入此处理器，向前端返回 401，同样需要在 SecurityConfig 中进行配置。
 
@@ -785,13 +991,13 @@ public class AuthenticationEntryPointImpl implements AuthenticationEntryPoint {
 }
 ```
 
-## 8.测试认证功能
+## 9.测试认证功能
 
-完成上述认证授权功能的开发后，可以通过两个简单的 HTML 页面来进行功能验证。请将以下前端页面文件放置在 `/resources/statics` 目录下。
+完成上述认证授权功能的开发后，可以通过两个简单的 HTML 页面来进行功能验证。请将以下前端页面文件放置在`/resources/statics`目录下。
 
-### 8.1 前端页面
+### 9.1 前端页面
 
-#### 8.1.1 登录页面 (login.html)
+#### 9.1.1 登录页面 (login.html)
 
 ```html title="login.html"
 <!DOCTYPE html>
@@ -823,7 +1029,7 @@ public class AuthenticationEntryPointImpl implements AuthenticationEntryPoint {
 </html>
 ```
 
-#### 8.1.2 登录页面样式 (login.css)
+#### 9.1.2 登录页面样式 (login.css)
 
 ```css title="login.css"
 .login-container {
@@ -885,7 +1091,7 @@ button:hover {
 }
 ```
 
-#### 8.1.3 登录页面脚本 (login.js)
+#### 9.1.3 登录页面脚本 (login.js)
 
 ```javascript title="login.js"
 document.getElementById("loginForm").addEventListener("submit", function (e) {
@@ -937,7 +1143,7 @@ document.getElementById("loginForm").addEventListener("submit", function (e) {
 });
 ```
 
-#### 8.1.4 数据库测试页面 (test-db.html)
+#### 9.1.4 数据库测试页面 (test-db.html)
 
 ```html title="test-db.html"
 <!DOCTYPE html>
@@ -996,6 +1202,14 @@ document.getElementById("loginForm").addEventListener("submit", function (e) {
     </div>
     <button id="clearTokenBtn">清除认证token</button>
     <script>
+      // 页面加载时检查认证状态
+      window.addEventListener("DOMContentLoaded", function () {
+        const token = localStorage.getItem("authToken");
+        if (!token) {
+          window.location.href = "/login.html";
+        }
+      });
+
       document
         .getElementById("clearTokenBtn")
         .addEventListener("click", function () {
@@ -1016,14 +1230,17 @@ document.getElementById("loginForm").addEventListener("submit", function (e) {
           // 从localStorage获取token
           const token = localStorage.getItem("authToken");
 
-          // 动态设置请求头，只有在有token时才添加
+          // 如果没有token，直接跳转到登录页面
+          if (!token) {
+            window.location.href = "/login.html";
+            return;
+          }
+
+          // 动态设置请求头
           const headers = {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
           };
-
-          if (token) {
-            headers["Authorization"] = `Bearer ${token}`;
-          }
 
           fetch("http://localhost:8888/test-db", {
             method: "GET",
@@ -1056,7 +1273,7 @@ document.getElementById("loginForm").addEventListener("submit", function (e) {
 </html>
 ```
 
-### 8.2 测试 Controller
+### 9.2 测试 Controller
 
 ```java title="TestController.java"
 @RestController
@@ -1076,7 +1293,7 @@ public class TestController {
 }
 ```
 
-### 8.3 测试密码生成
+### 9.3 测试密码生成
 
 为了测试认证功能，需要生成测试密码并手动存入数据库。Spring Security 会将前端传递的密码加密后与数据库中的密码进行比对。
 
@@ -1102,7 +1319,7 @@ public class BCryptPasswordGenerator {
 }
 ```
 
-### 8.4 功能验证步骤
+### 9.4 功能验证步骤
 
 1. 访问`http://localhost:8888/test-db.html`，使用生成的测试密码进行登录。
 
@@ -1116,6 +1333,6 @@ public class BCryptPasswordGenerator {
 
 4. 点击`清除认证token`按钮后再次点击`调用Test DB接口`，验证系统跳转到登录界面。
 
-5. 再次登录后，将 Redis 缓存的 `TTL` 以及 `value` 中的 `expireTime` 修改至 30 分钟内，再次点击`调用Test DB接口`，刷新 Redis 缓存，可以看到过期时间已经刷新。
+5. 再次登录后，将 Redis 缓存的`TTL`以及`value`中的`expireTime`修改至 30 分钟内，再次点击`调用Test DB接口`，刷新 Redis 缓存，可以看到过期时间已经刷新。
 
-至此，完整的认证功能测试完成。
+至此，完整的认证功能测试完成。建议在`SysUserServiceImpl`类中，从`authenticationManager.authenticate()`方法开始设置断点，结合 [Spring Security 登录流程](/docs/nanxu/authentication.html#_2-2-spring-security-登录流程) 进行调试，以便更深入地理解整个认证流程的执行过程。
