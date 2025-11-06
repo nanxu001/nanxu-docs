@@ -1503,6 +1503,176 @@ public class SecurityConfig {
 
 通过以上步骤，就完成了退出登录的功能实现。当用户发起登出请求时，系统会自动清除其在 Redis 中的缓存信息，并向前端返回操作成功的结果。
 
+### 10.4 测试
+
+在`test-db.html`页面中添加退出登录按钮及相关 JavaScript 脚本。用户登录后，点击该按钮将触发退出登录操作，此时系统会清除 Redis 中的用户缓存信息，并自动跳转回登录界面。
+
+```html title="test-db.html"
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数据库测试页面</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .container {
+            background-color: #f5f5f5;
+            padding: 20px;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 4px;
+            white-space: pre-wrap;
+        }
+
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+<h1>数据库测试页面</h1>
+<div class="container">
+    <button id="testDbBtn">调用Test DB接口</button>
+    <div id="result"></div>
+</div>
+<button id="clearTokenBtn">清除认证token</button>
+<button id="logoutBtn">退出登录</button>
+<script>
+    document.getElementById('logoutBtn').addEventListener('click', function() {
+        const token = localStorage.getItem('authToken');
+
+        // 调用 logout 接口
+        fetch('http://localhost:8888/logout', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log('登出成功:', data);
+
+                // 检查返回结果
+                if (data.code === 200) {
+                    // 清除本地存储的 token
+                    localStorage.removeItem('authToken');
+
+                    // 跳转到登录页面
+                    window.location.href = '/login.html';
+                } else {
+                    console.error('登出失败:', data);
+                }
+            })
+            .catch(error => {
+                console.error('登出失败:', error);
+                window.location.href = '/login.html';
+            });
+    });
+
+
+    // 页面加载时检查认证状态
+    window.addEventListener('DOMContentLoaded', function () {
+        const token = localStorage.getItem('authToken');
+        if (!token) {
+            window.location.href = '/login.html';
+        }
+    });
+
+    document.getElementById('clearTokenBtn').addEventListener('click', function () {
+        // 从localStorage删除token
+        localStorage.removeItem('authToken');
+
+        // 更新页面提示
+        const resultDiv = document.getElementById('result');
+        resultDiv.className = 'success';
+        resultDiv.textContent = '已成功清除认证token';
+    });
+
+    document.getElementById('testDbBtn').addEventListener('click', function () {
+        const resultDiv = document.getElementById('result');
+
+        // 从localStorage获取token
+        const token = localStorage.getItem('authToken');
+
+        // 如果没有token，直接跳转到登录页面
+        if (!token) {
+            window.location.href = '/login.html';
+            return;
+        }
+
+        // 动态设置请求头
+        const headers = {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        };
+
+        fetch('http://localhost:8888/test-db', {
+            method: 'GET',
+            headers: headers
+        })
+            .then(response => {
+                if (!response.ok) {
+                    // 特别处理401状态
+                    if (response.status === 401) {
+                        return response.json()
+                            .then(data => {
+                                console.log('401错误:', data);
+                                 window.location.href = '/login.html';
+                            });
+                    }
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                resultDiv.className = 'success';
+                resultDiv.textContent = '请求成功:\n' + JSON.stringify(data, null, 2);
+            })
+            .catch(error => {
+                resultDiv.className = 'error';
+                resultDiv.textContent = '请求失败: ' + error.message;
+                console.error('Error:', error);
+            });
+    });
+</script>
+</body>
+</html>
+```
+
 ## 11.参考
 
 [Spring Security（新版本）实现权限认证与授权](https://blog.csdn.net/weixin_46073538/article/details/128641746)
