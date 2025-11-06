@@ -1,5 +1,5 @@
 ---
-title: Spring Security认证
+title: Spring Security 认证
 icon: fas:fa-user-lock
 ---
 

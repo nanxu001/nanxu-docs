@@ -1,5 +1,5 @@
 ---
-title: SpringBoot多环境配置
+title: SpringBoot 多环境配置
 icon: fab:fa-envira
 ---
 
