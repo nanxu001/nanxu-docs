@@ -84,3 +84,7 @@ public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         .build();
 }
 ```
+
+## 5.参考
+
+[Spring Boot 3.x 引入 springdoc-openapi (内置 Swagger UI、webmvc-api)](https://blog.csdn.net/qq_55269149/article/details/137285469)

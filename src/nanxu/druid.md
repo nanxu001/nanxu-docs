@@ -169,3 +169,7 @@ public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 在过滤器中放行后访问`/druid/index.html`即可查看 SQL 监控信息。
 
 ![SQL 监控](/assets/image/nanxu/druidMonitor.png)
+
+## 6.参考
+
+[Spring Boot 3.x 整合 Druid 数据库连接池（含密码加密）](https://blog.csdn.net/2302_77276867/article/details/143328431)

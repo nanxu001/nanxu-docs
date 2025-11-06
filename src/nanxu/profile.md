@@ -47,3 +47,7 @@ spring:
 ::: important
 刷新 Maven 项目是环境切换的关键步骤，必须执行。
 :::
+
+## 4.参考
+
+[超详细！Spring Boot项目结合Maven Profile实现多环境切换，轻松搞定开发部署难题](https://zhuanlan.zhihu.com/p/27785070891)

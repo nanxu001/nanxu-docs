@@ -1336,3 +1336,8 @@ public class BCryptPasswordGenerator {
 5. 再次登录后，将 Redis 缓存的`TTL`以及`value`中的`expireTime`修改至 30 分钟内，再次点击`调用Test DB接口`，刷新 Redis 缓存，可以看到过期时间已经刷新。
 
 至此，完整的认证功能测试完成。建议在`SysUserServiceImpl`类中，从`authenticationManager.authenticate()`方法开始设置断点，结合 [Spring Security 登录流程](/docs/nanxu/authentication.html#_2-2-spring-security-登录流程) 进行调试，以便更深入地理解整个认证流程的执行过程。
+
+## 10.参考
+
+[Spring Security（新版本）实现权限认证与授权](https://blog.csdn.net/weixin_46073538/article/details/128641746)
+[SpringSecurity-从入门到精通](https://blog.csdn.net/weixin_43847283/article/details/124075302)
