@@ -7,7 +7,7 @@ WebClient 是 Spring WebFlux 提供的非阻塞式 HTTP 客户端，它支持同
 
 ## 1.引入相关依赖
 
-在项目中引入 webflux 依赖来实现发送HTTP请求功能。
+在项目中引入 WebFlux 依赖来实现 HTTP 请求发送功能。
 
 ```xml title="pom.xml"
 <dependency>
@@ -18,6 +18,8 @@ WebClient 是 Spring WebFlux 提供的非阻塞式 HTTP 客户端，它支持同
 
 ## 2.配置 WebClient
 
+### 2.1 配置文件设置
+
 ```yaml title="application.yml"
 webclient:
   connect-timeout: 5000
@@ -25,6 +27,8 @@ webclient:
   # 2MB
   max-in-memory-size: 2097152
 ```
+
+### 2.2 配置类实现
 
 ``` java title="WebClientConfig.java"
 @Configuration
@@ -64,7 +68,7 @@ public class WebClientConfig {
 }
 ```
 
-## 3.Http工具类
+## 3.Http工具类实现
 
 ```java title="HttpUtils.java"
 @Component
@@ -87,12 +91,13 @@ public class HttpUtils {
             StringBuilder sb = new StringBuilder(url);
             sb.append("?");
             boolean isFirst = true;
-            for (String key : params.keySet()) {
+            for (Map.Entry<String, String> entry : params.entrySet()) {
                 if (!isFirst) {
                     sb.append("&");
                 }
 
-                String value = params.get(key);
+                String key = entry.getKey();
+                String value = entry.getValue();
                 if (value != null) {
                     sb.append(key).append("=").append(URLEncoder.encode(value, StandardCharsets.UTF_8));
                 }
