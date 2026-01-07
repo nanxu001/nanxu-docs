@@ -133,7 +133,63 @@ public class UnifiedLogService {
 }
 ```
 
-## 5.通用日志事件监听器
+## 5.登录日志实体类
+
+```java title="SysLoginLog.java"
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@TableName("sys_login_log")
+public class SysLoginLog {
+    /**
+     * 主键id
+     */
+    @TableId(type = IdType.AUTO)
+    private Integer id;
+
+    /**
+     * 用户名
+     */
+    private String username;
+
+    /**
+     * 登录ip
+     */
+    private String ip;
+
+    /**
+     * 登录地址
+     */
+    private String address;
+
+    /**
+     * 浏览器
+     */
+    private String browser;
+
+    /**
+     * 操作系统
+     */
+    private String os;
+
+    /**
+     * 登录状态（0-成功，1-失败）
+     */
+    private Integer status;
+
+    /**
+     * 操作信息
+     */
+    private String msg;
+
+    /**
+     * 登录时间
+     */
+    private Date time;
+}
+```
+
+## 6.通用日志事件监听器
 
 负责处理日志事件，执行具体的数据库记录操作。
 
@@ -176,7 +232,7 @@ public class UnifiedLogEventListener {
 }
 ```
 
-## 6.修改登录接口
+## 7.修改登录接口
 
 在登录流程中集成日志记录功能，确保登录成功和失败都能记录日志。
 
@@ -217,7 +273,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 }
 ```
 
-## 7.修改退出登录接口
+## 8.修改退出登录接口
 
 在用户退出登录时同样记录相应的日志信息。
 
