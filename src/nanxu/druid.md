@@ -38,7 +38,7 @@ spring:
   datasource:
     druid:
       driver-class-name: com.mysql.cj.jdbc.Driver
-      url: jdbc:mysql://localhost:3306/nanxu?characterEncoding=utf8&serverTimezone=UTC
+      url: jdbc:mysql://localhost:3306/nanxu?characterEncoding=utf8&serverTimezone=Asia/Shanghai
       username: root
       password: ${spring.datasource.druid.password}
       # AOP 监控扫描路径
