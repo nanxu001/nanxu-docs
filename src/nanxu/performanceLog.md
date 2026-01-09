@@ -34,20 +34,13 @@ public class PerformanceLogAspect {
     @Around("execution(* com.nanxu.controller..*(..))*")
     public Object logPerformance(ProceedingJoinPoint joinPoint) throws Throwable {
         long startTimeMillis = System.currentTimeMillis();
-        Object returnValue = null;
         try {
-            returnValue = joinPoint.proceed();
-            return returnValue;
-        }  catch (Throwable e) {
-            returnValue = Result.error(e.getMessage());
-            throw e;
+            return joinPoint.proceed();
         } finally {
             long endTimeMillis = System.currentTimeMillis();
             MethodSignature signature = (MethodSignature) joinPoint.getSignature();
             String methodName = signature.getName();
-            String[] parameterNames = signature.getParameterNames();
-            Object[] args = joinPoint.getArgs();
-            logService.logPerformance(this, startTimeMillis, endTimeMillis, methodName, parameterNames, args, returnValue);
+            logService.logPerformance(this, startTimeMillis, endTimeMillis, methodName);
         }
     }
 }
