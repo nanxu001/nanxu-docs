@@ -114,8 +114,7 @@ sequenceDiagram
     Redis-->>TokenService: 缓存完成
     TokenService-->>SysUserService: 返回生成的Token
     SysUserService-->>IndexController: 返回Result结果
-    IndexController-->>JwtAuthenticationTokenFilter: 响应返回经过过滤器
-    note right of JwtAuthenticationTokenFilter: 响应中无Token，直接放行
+    IndexController-->>JwtAuthenticationTokenFilter: 响应返回
     JwtAuthenticationTokenFilter-->>前端: 返回Token给前端
 ```
 
