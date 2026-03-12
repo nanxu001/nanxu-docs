@@ -16,7 +16,7 @@ export default hopeTheme({
   favicon: "/favicon.ico",
 
   repo: "nanxu001/nanxu-docs",
-  repoLabel: "Gitee",
+  repoLabel: "GitHub",
   repoDisplay: true,
 
   // 文档在仓库中的目录
@@ -36,19 +36,18 @@ export default hopeTheme({
   footer: "",
   displayFooter: true,
 
-  // 加密配置
-  encrypt: {
-    config: {
-      "/demo/encrypt.html": {
-        hint: "Password: 1234",
-        password: "1234",
-      },
-    },
-  },
-
   // 多语言配置
   metaLocales: {
     editLink: "在 GitHub 上编辑此页",
+  },
+
+  blog: {
+    medias: {
+      GitHub: "https://github.com/nanxu001",
+      Gitee: "https://gitee.com/nanxu001",
+      QQ: "https://qm.qq.com/cgi-bin/qm/qr?k=Iwk_VbhR9fSH9bi__95rQetAr4BjMY8M",
+      Steam: "https://steamcommunity.com/id/nanxu001/"
+    }
   },
 
   // 如果想要实时查看任何改变，启用它。注: 这对更新性能有很大负面影响
