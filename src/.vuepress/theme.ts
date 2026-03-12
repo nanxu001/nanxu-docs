@@ -4,16 +4,20 @@ import navbar from "./navbar.js";
 import sidebar from "./sidebar.js";
 
 export default hopeTheme({
-  hostname: "https://vuepress-theme-hope-docs-demo.netlify.app",
+  hostname: "https://nanxu.online",
 
   author: {
     name: "Nanxu",
-    /* url: "https://mister-hope.com", */
+    url: "https://nanxu.online",
+    email: "1275454303@qq.com"
   },
 
-  logo: "logo.png",
+  logo: "/logo.png",
+  favicon: "/favicon.ico",
 
   repo: "nanxu001/nanxu-docs",
+  repoLabel: "Gitee",
+  repoDisplay: true,
 
   // 文档在仓库中的目录
   docsDir: "src",
@@ -142,6 +146,8 @@ export default hopeTheme({
     },
 
     copyright: true,
+
+    blog: true
 
     // 如果你需要 PWA。安装 @vuepress/plugin-pwa 并取消下方注释
     // pwa: {

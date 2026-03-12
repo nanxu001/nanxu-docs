@@ -6,8 +6,8 @@ export default defineUserConfig({
   base: "/docs/",
 
   lang: "zh-CN",
-  title: "文档演示",
-  description: "vuepress-theme-hope 的文档演示",
+  title: "个人空间",
+  description: "Nanxu 的个人空间",
 
   theme,
 
