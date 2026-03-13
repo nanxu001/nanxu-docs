@@ -33,7 +33,9 @@ export default hopeTheme({
   sidebar,
 
   // 页脚
-  footer: "",
+  copyright: "版权所有 © 2026-至今 Nanxu",
+  footer: '使用 <a href="https://theme-hope.vuejs.press/zh/" target="_blank">VuePress Theme Hope</a> 主题 | MIT 协议',
+  license: "MIT",
   displayFooter: true,
 
   // 多语言配置
