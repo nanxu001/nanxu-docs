@@ -4,8 +4,8 @@ export default sidebar({
   "/": [
     "",
     {
-      text: "Nanxu",
-      icon: "book",
+      text: "代码笔记",
+      icon: "code",
       prefix: "nanxu/",
       link: "nanxu/",
       children: "structure"
