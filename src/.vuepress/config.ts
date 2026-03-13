@@ -6,7 +6,7 @@ export default defineUserConfig({
   base: "/docs/",
 
   lang: "zh-CN",
-  title: "个人空间",
+  title: "Nanxu",
   description: "Nanxu 的个人空间",
 
   theme,
