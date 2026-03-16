@@ -4,11 +4,11 @@ import navbar from "./navbar.js";
 import sidebar from "./sidebar.js";
 
 export default hopeTheme({
-  hostname: "https://nanxu.online",
+  hostname: "https://www.nanxu.online",
 
   author: {
     name: "Nanxu",
-    url: "https://nanxu.online",
+    url: "https://www.nanxu.online",
     email: "1275454303@qq.com"
   },
 
