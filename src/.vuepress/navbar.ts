@@ -4,7 +4,7 @@ export default navbar([
   "/",
   {
     text: "代码笔记",
-    link: "/nanxu/README.md",
+    link: "/code/README.md",
     icon: "code"
   }
 ]);

@@ -6,8 +6,8 @@ export default sidebar({
     {
       text: "代码笔记",
       icon: "code",
-      prefix: "nanxu/",
-      link: "nanxu/",
+      prefix: "code/",
+      link: "code/",
       children: "structure"
     }
   ],
