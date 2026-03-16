@@ -13,5 +13,5 @@ heroText: Nanxu的个人空间
 tagline: ""
 
 copyright: 版权所有 © 2026-至今 Nanxu
-footer: 使用 <a href="https://theme-hope.vuejs.press/zh/" target="_blank">VuePress Theme Hope</a> 主题 | MIT 协议
+footer: <a href="https://beian.miit.gov.cn/" target="_blank" style="color:inherit;text-decoration:none;">晋ICP备2026002868号</a>
 ---

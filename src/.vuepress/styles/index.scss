@@ -1,1 +1,14 @@
 // place your custom styles here
+/* 针对备案号链接的悬停效果 */
+footer a[href*="beian.miit.gov.cn"],
+.page-footer a[href*="beian.miit.gov.cn"],
+.vp-footer a[href*="beian.miit.gov.cn"] {
+  color: var(--vp-c-text-3) !important;
+  text-decoration: none !important;
+  transition: color 0.3s ease !important;
+  
+  &:hover {
+    color: var(--vp-c-accent-hover) !important;
+    text-decoration: none !important;
+  }
+}
