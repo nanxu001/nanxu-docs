@@ -148,7 +148,24 @@ export default hopeTheme({
 
     copyright: true,
 
-    blog: true
+    blog: true,
+
+    docsearch: {
+      appId: "Y6BLN7AI61",
+      apiKey: "bce656e392d395ad097b3d08a5479fa7",
+      indexName: "nanxu",
+      locales: { 
+        "/": {
+          placeholder: "搜索文档",
+          translations: {
+            button: {
+              buttonText: "搜索文档",
+              buttonAriaLabel: "搜索文档",
+            }
+          },
+        },
+      }
+    }
 
     // 如果你需要 PWA。安装 @vuepress/plugin-pwa 并取消下方注释
     // pwa: {
