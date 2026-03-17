@@ -2,6 +2,7 @@ import { hopeTheme } from "vuepress-theme-hope";
 
 import navbar from "./navbar.js";
 import sidebar from "./sidebar.js";
+import verificationConfig from "./verification.config.js";
 
 export default hopeTheme({
   hostname: "https://www.nanxu.online",
@@ -151,20 +152,30 @@ export default hopeTheme({
     blog: true,
 
     docsearch: {
-      appId: "Y6BLN7AI61",
-      apiKey: "bce656e392d395ad097b3d08a5479fa7",
-      indexName: "nanxu",
-      locales: { 
-        "/": {
-          placeholder: "搜索文档",
-          translations: {
-            button: {
-              buttonText: "搜索文档",
-              buttonAriaLabel: "搜索文档",
-            }
+      appId: verificationConfig.docsearch.appId,
+      apiKey: verificationConfig.docsearch.apiKey,
+      indexName: verificationConfig.docsearch.indexName,
+    },
+
+    seo: {
+      customHead: (head) => {
+        // 百度
+        head.push([
+          'meta',
+          {
+            name: 'baidu-site-verification',
+            content: verificationConfig.baiduSiteVerification,
           },
-        },
-      }
+        ]);
+        // Google
+        head.push([
+          'meta',
+          {
+            name: 'google-site-verification',
+            content: verificationConfig.googleSiteVerification,
+          },
+        ]);
+      },
     }
 
     // 如果你需要 PWA。安装 @vuepress/plugin-pwa 并取消下方注释
