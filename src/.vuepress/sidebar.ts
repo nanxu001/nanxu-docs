@@ -11,4 +11,22 @@ export default sidebar({
       children: "structure"
     }
   ],
+  "/code/": [
+    "",
+    {
+      text: "java",
+      icon: "fab:java",
+      prefix: "java/",
+      link: "java/",
+      // 自动生成侧边栏
+      children: "structure"
+    },
+    {
+      text: "Python",
+      icon: "fab:python",
+      prefix: "python/",
+      link: "python/",
+      children: "structure"
+    }
+  ]
 });
