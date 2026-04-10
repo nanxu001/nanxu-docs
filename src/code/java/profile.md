@@ -43,7 +43,7 @@ spring:
 
 完成配置后，在 Maven 中选择对应环境 Profile，刷新 Maven 项目并重新启动服务或执行打包操作，即可实现环境切换。
 
-![选择环境](/assets/image/nanxu/selectEnvironment.png)
+![选择环境](/assets/image/code/java/selectEnvironment.png)
 ::: important
 刷新 Maven 项目是环境切换的关键步骤，必须执行。
 :::

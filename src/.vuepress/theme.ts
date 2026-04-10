@@ -151,7 +151,9 @@ export default hopeTheme({
 
     copyright: true,
 
-    blog: true,
+    blog: {
+      excerptLength: 0
+    },
 
     docsearch: {
       appId: verificationConfig.docsearch.appId,

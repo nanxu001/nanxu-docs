@@ -5,7 +5,6 @@ export default navbar([
   {
     text: "代码笔记",
     link: "/code/README.md",
-    icon: "code",
-    children: ["/code/java/README.md", "/code/python/README.md"]
+    icon: "code"
   }
 ]);
