@@ -1,6 +1,7 @@
 ---
 title: SpringBoot 多环境配置
-icon: fab:fa-envira
+icon: fas:cogs
+order: 1
 ---
 
 通过在`pom.xml`中配置 Profile，可以便捷地实现不同运行环境间的切换。

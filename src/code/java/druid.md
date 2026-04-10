@@ -1,6 +1,7 @@
 ---
 title: Druid 线程池
 icon: database
+order: 2
 ---
 
 ## 1.导入 Druid

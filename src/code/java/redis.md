@@ -1,6 +1,7 @@
 ---
 title: Redis
-icon: fas:fa-server
+icon: fas:bolt
+order: 3
 ---
 
 ## 1.引入 Redis 依赖

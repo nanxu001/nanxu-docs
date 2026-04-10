@@ -1,6 +1,7 @@
 ---
 title: HTTP 工具类
-icon: fas:fa-screwdriver-wrench
+icon: fas:globe
+order: 6
 ---
 
 WebClient 是 Spring WebFlux 提供的非阻塞式 HTTP 客户端，它支持同步和异步的调用方式，适合高并发场景下的服务通信。

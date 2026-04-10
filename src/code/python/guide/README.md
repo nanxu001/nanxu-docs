@@ -1,6 +1,6 @@
 ---
 title: 基础教程
-icon: fab:python
+icon: fas:book-open
 index: false
 ---
 

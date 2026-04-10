@@ -1,6 +1,7 @@
 ---
 title: IP 工具类
-icon: fas:fa-screwdriver-wrench
+icon: fas:map-location-dot
+order: 7
 ---
 
 IP 工具类用于获取用户真实 IP 地址，通过多种 HTTP 头信息和请求参数来获取客户端的原始 IP 地址，有效处理了经过代理服务器、负载均衡器等网络设备转发后的情况。

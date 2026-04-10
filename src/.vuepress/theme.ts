@@ -33,7 +33,7 @@ export default hopeTheme({
   // 侧边栏
   sidebar,
   // 按日期升序排序
-  sidebarSorter: "date",
+  sidebarSorter: "order",
 
   // 页脚
   copyright: "版权所有 © 2026-至今 Nanxu",

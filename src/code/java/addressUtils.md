@@ -1,6 +1,7 @@
 ---
 title: 地址工具类
-icon: fas:fa-screwdriver-wrench
+icon: fas:map
+order: 8
 ---
 
 地址工具类通过集成高德地图 API 实现根据用户 IP 地址查询地理位置信息的功能。

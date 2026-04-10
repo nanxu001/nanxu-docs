@@ -15,7 +15,7 @@ export default sidebar({
     "",
     {
       text: "基础教程",
-      icon: "fab:python",
+      icon: "fas:book-open",
       prefix: "guide/",
       link: "guide/",
       children: "structure"

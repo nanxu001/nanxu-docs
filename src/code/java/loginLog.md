@@ -1,6 +1,7 @@
 ---
-title: 异步记录日志
-icon: fas:fa-screwdriver-wrench
+title: 异步记录登录日志
+icon: fas:clipboard-list
+order: 9
 ---
 
 采用事件驱动模式实现异步记录登录日志到数据库，通过 Spring 的事件发布/监听机制将日志记录操作与业务逻辑解耦，避免日志记录对业务处理性能的影响。

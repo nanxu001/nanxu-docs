@@ -1,6 +1,7 @@
 ---
 title: 记录性能日志
-icon: fas:fa-screwdriver-wrench
+icon: fas:chart-line
+order: 10
 ---
 
 通过 AOP 实现接口性能监控，自动记录每个接口的执行时间、请求路径等性能指标。
@@ -21,7 +22,7 @@ icon: fas:fa-screwdriver-wrench
 定义切面类拦截指定包路径下的控制器方法，统计接口执行性能。
 
 ::: warning
-使用AOP向数据库记录性能日志前，需要先完成[异步记录日志](/docs/nanxu/loginLog.html)的相关配置。
+使用AOP向数据库记录性能日志前，需要先完成[异步记录登录日志](/code/java/loginLog.html)的相关配置。
 :::
 
 ```java title="PerformanceLogAspect.java"

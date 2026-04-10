@@ -1,12 +1,13 @@
 ---
 title: 全局异常处理
 icon: fas:fa-bug
+order: 11
 ---
 
 全局异常处理机制用于捕获和处理应用程序中未被捕获的异常，提供统一的异常处理流程和响应格式。该机制不仅能够确保系统在发生异常时返回标准化的错误信息，还可以根据需要自定义异常处理后的操作，如将异常信息记录到数据库中进行后续分析。
 
 ::: warning
-使用全局异常处理向数据库记录日志功能前，需要先完成[异步记录日志](/docs/nanxu/loginLog.html)的相关配置，如不需要此功能可以跳过相关配置。
+使用全局异常处理向数据库记录日志功能前，需要先完成[异步记录登录日志](/code/java/loginLog.html)的相关配置，如不需要此功能可以跳过相关配置。
 :::
 
 ## 1.全局异常处理器
@@ -118,7 +119,7 @@ public class ExceptionLogEvent extends BaseLogEvent {
 
 ## 3.记录异常日志方法
 
-在[通用日志服务](/docs/nanxu/loginLog.html#_4-通用日志服务类)中新增记录异常日志方法。
+在[通用日志服务](/code/java/loginLog.html#_4-通用日志服务类)中新增记录异常日志方法。
 
 ```java title="UnifiedLogService.java"
 /**
@@ -187,7 +188,7 @@ public class SysExceptionLog {
 
 ## 5.处理异常日志事件
 
-在[通用日志事件监听器](/docs/nanxu/loginLog.html#_6-通用日志事件监听器)中添加处理异常日志事件的方法。
+在[通用日志事件监听器](/code/java/loginLog.html#_6-通用日志事件监听器)中添加处理异常日志事件的方法。
 
 ```java title="UnifiedLogEventListener.java"
 private final SysExceptionService exceptionService;
