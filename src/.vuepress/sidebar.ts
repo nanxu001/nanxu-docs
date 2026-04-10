@@ -20,6 +20,13 @@ export default sidebar({
       link: "guide/",
       children: "structure"
     },
+    {
+      text: "数据分析",
+      icon: "fas:chart-line",
+      prefix: "analysis/",
+      link: "analysis/",
+      children: "structure"
+    }
   ],
   "/code/": [
     "",
@@ -35,7 +42,7 @@ export default sidebar({
       icon: "fab:python",
       prefix: "python/",
       link: "python/",
-      children: ["guide/"]
+      children: ["guide/", "analysis/"]
     }
   ],
   "/": [
