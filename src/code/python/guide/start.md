@@ -5,6 +5,7 @@ order: 2
 ---
 
 ## 1.新建项目
+
 1. 打开PyCharm，点击新建项目。
 
 ![新建项目](/assets/image/code/python/guide/start/newPorject.png)
