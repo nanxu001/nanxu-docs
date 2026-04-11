@@ -8,14 +8,14 @@ order: 2
 
 1. 打开PyCharm，点击新建项目。
 
-![新建项目](/assets/image/code/python/guide/start/newPorject.png)
+![新建项目](/assets/image/code/python/guide/start/new-project.png)
 
 2. 在项目配置界面中，填写项目路径并进行如下设置：
     - 解释器选择项目 venv 环境
     - Python 版本选择在 [安装Python环境](/code/python/guide/install.html) 步骤中所安装的 Python 目录
     - 如果下拉列表中未显示所需版本，请点击"文件夹"图标手动选择
 
-![创建项目](/assets/image/code/python/guide/start/createProject.png)
+![创建项目](/assets/image/code/python/guide/start/create-project.png)
 
 3. 配置完成后，点击"创建"按钮创建项目。
 
@@ -25,7 +25,7 @@ order: 2
 
 2. 在新创建的文件夹上右键单击，选择"新建" → "Python 文件"，输入文件名后按回车键确认。
 
-![创建文件](/assets/image/code/python/guide/start/createFile.png)
+![创建文件](/assets/image/code/python/guide/start/create-file.png)
 
 ## 3.编写代码
 

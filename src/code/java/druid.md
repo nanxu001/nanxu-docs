@@ -169,7 +169,7 @@ public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
 在过滤器中放行后访问`/druid/index.html`即可查看 SQL 监控信息。
 
-![SQL 监控](/assets/image/code/java/druidMonitor.png)
+![SQL 监控](/assets/image/code/java/druid-monitor.png)
 
 ## 6.参考
 

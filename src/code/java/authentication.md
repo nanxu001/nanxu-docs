@@ -1394,11 +1394,11 @@ public class BCryptPasswordGenerator {
 
 2. 登录成功后，可在 Redis 中查看已缓存的用户数据。
 
-![Redis 缓存](/assets/image/code/java/loginRedisCache.png)
+![Redis 缓存](/assets/image/code/java/login-redis-cache.png)
 
 3. 点击`调用Test DB接口`按钮，验证能够正常查询到数据，请求头中包含认证 token。
 
-![Authorization 请求头](/assets/image/code/java/authorizationHeader.png)
+![Authorization 请求头](/assets/image/code/java/authorization-header.png)
 
 4. 点击`清除认证token`按钮后再次点击`调用Test DB接口`，验证系统跳转到登录界面。
 

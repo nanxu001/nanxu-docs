@@ -30,7 +30,7 @@ order: 1
    - 打开Python安装目录，点击上方地址栏复制路径
    - 打开控制面板 → 系统和安全 → 系统 → 高级系统设置
 
-    ![高级系统设置](/assets/image/code/python/guide/install/systemInfo.png)
+    ![高级系统设置](/assets/image/code/python/guide/install/system-info.png)
 
    - 点击"环境变量"
 
@@ -38,11 +38,11 @@ order: 1
     
    - 在"系统变量"区域找到 Path，点击"编辑"
 
-    ![选择Path](/assets/image/code/python/guide/install/choosePath.png)
+    ![选择Path](/assets/image/code/python/guide/install/choose-path.png)
 
    - 点击"新建"，粘贴刚才复制的Python安装路径，并将其移到列表顶部以确保优先级
 
-        ![添加环境变量](/assets/image/code/python/guide/install/addPath.png)
+        ![添加环境变量](/assets/image/code/python/guide/install/add-path.png)
 
    - 点击确定保存所有更改
 
@@ -52,7 +52,7 @@ order: 1
 
 7. 在命令提示符中输入 `python` 并按回车，如果显示Python版本信息如下图所示，则说明安装成功：
 
-    ![安装成功](/assets/image/code/python/guide/install/installSuccess.png)
+    ![安装成功](/assets/image/code/python/guide/install/install-success.png)
 
     如果出现 `'python' is not recognized as an internal or external command, operable program or batch file.` 的错误提示，则说明环境变量配置失败。
     此时请检查环境变量是否正确配置，或尝试重启计算机、重新打开命令提示符窗口后再测试。
