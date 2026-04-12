@@ -4,7 +4,7 @@ layout: Blog
 hero: true
 icon: house
 title: 主页
-heroImage: "/logo.png"
+heroImage: "/logo.webp"
 bgImage: https://tu.ltyuanfang.cn/api/fengjing.php
 bgImageStyle:
   background-attachment: fixed

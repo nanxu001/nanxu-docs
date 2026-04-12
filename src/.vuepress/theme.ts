@@ -13,7 +13,7 @@ export default hopeTheme({
     email: "1275454303@qq.com"
   },
 
-  logo: "/logo.png",
+  logo: "/logo.webp",
   favicon: "/favicon.ico",
 
   repo: "nanxu001/nanxu-docs",
