@@ -44,7 +44,7 @@ df = pd.DataFrame(
 
 运行结果:
 
-![运行结果](/assets/image/code/python/analysis/pandas/generate-data-frame.png)
+![构造 DataFrame](/assets/image/code/python/analysis/pandas/generate-data-frame.png)
 
 3. 统计计算
 
@@ -313,7 +313,9 @@ df = pd.read_csv("data/sales.csv")
 df
 ```
 
-![运行结果](/assets/image/code/python/analysis/pandas/read-data.png)
+运行结果:
+
+![读取数据](/assets/image/code/python/analysis/pandas/read-data.png)
 
 ### 6.2 指定读取列
 
@@ -327,7 +329,9 @@ df = pd.read_csv("data/sales.csv", usecols=["订单号", "产品类别", "产品
 df
 ```
 
-![运行结果](/assets/image/code/python/analysis/pandas/read-data-specify-columns.png)
+运行结果:
+
+![指定读取列](/assets/image/code/python/analysis/pandas/read-data-specify-columns.png)
 
 ::: tip
 `usecols` 参数也可以接受列索引列表，例如 `usecols=[0, 1, 2]` 表示读取前三列。
@@ -347,7 +351,9 @@ df["销售金额"] = df["销售数量"] * df["单价"]
 df
 ```
 
-![运行结果](/assets/image/code/python/analysis/pandas/data-processing.png)
+运行结果:
+
+![数据处理](/assets/image/code/python/analysis/pandas/data-processing.png)
 
 ### 6.4 写入数据
 
@@ -394,7 +400,7 @@ df1.head(10)
 
 运行结果:
 
-![运行结果](/assets/image/code/python/analysis/pandas/first-n-rows.png)
+![查看前 n 行数据](/assets/image/code/python/analysis/pandas/first-n-rows.png)
 
 #### 7.1.2 查看最后 n 行数据
 
@@ -410,7 +416,7 @@ df1.tail(10)
 
 运行结果:
 
-![运行结果](/assets/image/code/python/analysis/pandas/tail-n-rows.png)
+![查看最后 n 行数据](/assets/image/code/python/analysis/pandas/tail-n-rows.png)
 
 #### 7.1.3 查看数据统计信息
 
@@ -426,7 +432,7 @@ df1.describe()
 
 运行结果:
 
-![运行结果](/assets/image/code/python/analysis/pandas/describe.png)
+![查看数据统计信息](/assets/image/code/python/analysis/pandas/describe.png)
 
 #### 7.1.4 查看数据信息
 
@@ -505,7 +511,7 @@ df2[["产品类别", "产品名称", "单价"]]
 
 运行结果:
 
-![运行结果](/assets/image/code/python/analysis/pandas/choose-multiple-columns.png)
+![选择多列](/assets/image/code/python/analysis/pandas/choose-multiple-columns.png)
 
 ::: important
 必须使用双层方括号，单层方括号只能选择单列或进行条件筛选。
@@ -534,7 +540,7 @@ df2.iloc[0:5:1]
 
 运行结果:
 
-![运行结果](/assets/image/code/python/analysis/pandas/choose-columns-by-line-number.png)
+![基于行号选择行](/assets/image/code/python/analysis/pandas/choose-columns-by-line-number.png)
 
 ::: important
 行号与索引是两个不同的概念。
@@ -569,7 +575,7 @@ df2.loc[6805677496:5888085066:1]
 
 运行结果:
 
-![运行结果](/assets/image/code/python/analysis/pandas/choose-columns-by-index.png)
+![基于索引选择行](/assets/image/code/python/analysis/pandas/choose-columns-by-index.png)
 
 ### 7.3 数据过滤
 
@@ -589,7 +595,7 @@ df3[df3["销售数量"] >= 10]
 
 运行结果:
 
-![运行结果](/assets/image/code/python/analysis/pandas/filter-by-single-condition.png)
+![单条件筛选](/assets/image/code/python/analysis/pandas/filter-by-single-condition.png)
 
 ::: info
 `df3["销售数量"] >= 10` 生成一个布尔 Series，Pandas 根据布尔值筛选出为 `True` 的行。
@@ -609,7 +615,7 @@ df3[df3["产品类别"].isin(["食品", "图书"])]
 
 运行结果:
 
-![运行结果](/assets/image/code/python/analysis/pandas/filter-by-multiple-values.png)
+![多值匹配筛选](/assets/image/code/python/analysis/pandas/filter-by-multiple-values.png)
 
 ::: tip
 `isin()` 方法等价于 SQL 中的 IN 操作符，适合处理多个离散值的匹配。
@@ -629,7 +635,7 @@ df3[df3["单价"].between(100, 200, inclusive="both")]
 
 运行结果:
 
-![运行结果](/assets/image/code/python/analysis/pandas/filter-by-range.png)
+![范围筛选](/assets/image/code/python/analysis/pandas/filter-by-range.png)
 
 ::: info 参数说明
 - `inclusive="both"`：包含上下边界（默认值）
@@ -652,7 +658,7 @@ df3[(df3["销售数量"] >= 8) & (df3["单价"] >= 100)]
 
 运行结果:
 
-![运行结果](/assets/image/code/python/analysis/pandas/filter-by-and-condition.png)
+![多条件组合筛选](/assets/image/code/python/analysis/pandas/filter-by-and-condition.png)
 
 ::: important
 1. 每个条件必须用括号 `()` 包裹，否则会因为运算符优先级导致错误
@@ -677,7 +683,7 @@ df3[
 
 运行结果:
 
-![运行结果](/assets/image/code/python/analysis/pandas/filter-by-complex-condition.png)
+![复杂多条件组合筛选](/assets/image/code/python/analysis/pandas/filter-by-complex-condition.png)
 
 ## 8.数据清洗
 
@@ -703,7 +709,7 @@ df.isnull()
 
 运行结果:
 
-![运行结果](/assets/image/code/python/analysis/pandas/detect-null-values.png)
+![查看缺失值](/assets/image/code/python/analysis/pandas/detect-null-values.png)
 
 ::: tip
 也可以使用 `notnull()` 方法，它与 `isnull()` 相反，非缺失值标记为 `True`，缺失值标记为 `False`。
@@ -742,11 +748,11 @@ df_col_dropped
 
 运行结果(删除缺失行):
 
-![运行结果](/assets/image/code/python/analysis/pandas/drop-null-rows.png)
+![删除缺失行](/assets/image/code/python/analysis/pandas/drop-null-rows.png)
 
 运行结果(删除缺失列):
 
-![运行结果](/assets/image/code/python/analysis/pandas/drop-null-columns.png)
+![删除缺失列](/assets/image/code/python/analysis/pandas/drop-null-columns.png)
 
 #### 8.1.3 填充缺失值
 
@@ -775,7 +781,7 @@ df.fillna("---")
 
 运行结果:
 
-![运行结果](/assets/image/code/python/analysis/pandas/fill-null-with-value.png)
+![填充指定值](/assets/image/code/python/analysis/pandas/fill-null-with-value.png)
 
 **2. 向前填充（ffill）**
 
@@ -793,7 +799,7 @@ df.ffill()
 
 运行结果:
 
-![运行结果](/assets/image/code/python/analysis/pandas/fill-null-ffill.png)
+![向前填充](/assets/image/code/python/analysis/pandas/fill-null-ffill.png)
 
 ::: info
 `ffill()` 是 `fillna(method='ffill')` 的简写形式，意为 "forward fill"。
@@ -815,7 +821,7 @@ df.bfill()
 
 运行结果:
 
-![运行结果](/assets/image/code/python/analysis/pandas/fill-null-bfill.png)
+![向后填充](/assets/image/code/python/analysis/pandas/fill-null-bfill.png)
 
 ::: info
 `bfill()` 是 `fillna(method='bfill')` 的简写形式，意为 "backward fill"。
@@ -903,3 +909,379 @@ df.drop_duplicates(subset=["订单号"], keep="last")
 
 ### 8.3 异常值处理
 
+异常值是指数据集中明显偏离正常范围的数值（如负数的价格、超出合理范围的年龄等）。处理异常值可以保证数据分析的准确性。
+
+#### 8.3.1 查看异常值
+
+通过条件筛选可以找出符合异常定义的数据。以下示例检测"单价"为负数的异常记录：
+
+```python title = "05.Pandas-数据清洗.ipynb"
+import pandas as pd
+
+df = pd.read_csv("data/sales.csv")
+
+pd.set_option("display.max_rows", None)
+
+df[df["单价"] < 0]
+```
+
+运行结果:
+
+![查看异常值](/assets/image/code/python/analysis/pandas/detect-outliers.png)
+
+::: info 说明
+实际业务中，异常值的定义需要根据具体场景确定，例如可以通过统计学方法（如 3σ 原则、箱线图）来识别。
+:::
+
+#### 8.3.2 删除异常值
+
+如果异常值是错误数据且无法修复，可以直接将其从数据集中删除。
+
+```python title = "05.Pandas-数据清洗.ipynb"
+import pandas as pd
+
+df = pd.read_csv("data/sales.csv")
+
+pd.set_option("display.max_rows", None)
+
+df_cleaned = df.drop(df[df["单价"] < 0].index)
+df_cleaned
+```
+
+运行结果:
+
+![删除异常值](/assets/image/code/python/analysis/pandas/remove-outliers.png)
+
+::: tip
+`drop()` 方法默认返回一个新的 `DataFrame`，原数据不会被修改。如果需要原地修改，可以设置 `inplace=True`。
+:::
+
+#### 8.3.3 修复异常值
+
+如果异常值是由于数据采集错误导致的（如符号错误），可以尝试进行修复而不是直接删除。以下示例将"单价"列的所有负数取绝对值：
+
+```python title = "05.Pandas-数据清洗.ipynb"
+import pandas as pd
+
+df = pd.read_csv("data/sales.csv")
+
+pd.set_option("display.max_rows", None)
+
+df["单价"] = df["单价"].abs()
+```
+
+运行结果:
+
+![修复异常值](/assets/image/code/python/analysis/pandas/fix-outliers.png)
+
+::: info 应用场景
+- **取绝对值**：适用于符号错误的情况
+- **替换为均值/中位数**：适用于随机误差导致的异常
+- **替换为边界值**：适用于超出合理范围但方向正确的情况
+:::
+
+### 8.4 数据格式处理
+
+在数据采集或导入过程中，经常会遇到日期格式不统一、字符串包含多余空格等问题。Pandas 提供了强大的字符串处理方法（`.str` 访问器）来清洗和规范化数据格式。
+
+#### 8.4.1 替换字符串内容
+
+使用 `str.replace()` 方法可以批量替换列中的特定字符。以下示例将"订单日期"列中的斜杠 `/` 统一替换为横杠 `-`，以符合标准的日期格式：
+
+```python title = "05.Pandas-数据清洗.ipynb"
+import pandas as pd
+
+df = pd.read_csv("data/sales.csv")
+
+pd.set_option("display.max_rows", None)
+
+# 将日期格式从 "2023/01/01" 转换为 "2023-01-01"
+df["订单日期"] = df["订单日期"].str.replace("/", "-")
+```
+
+::: tip
+`str.replace()` 支持正则表达式。如果需要更复杂的替换逻辑，可以传入正则模式。
+:::
+
+#### 8.4.2 去除首尾空格
+
+如果数据中存在多余的空格，可以使用 str.strip() 方法进行清理。
+
+```python title = "05.Pandas-数据清洗.ipynb"
+import pandas as pd
+
+df = pd.read_csv("data/sales.csv")
+
+
+# 去除"产品名称"列中每个字符串的首尾空格
+df["产品名称"] = df["产品名称"].str.strip()
+```
+
+::: info 常用方法
+- `str.strip()`：去除首尾空格
+- `str.lstrip()`：去除左侧空格
+- `str.rstrip()`：去除右侧空格
+:::
+
+#### 8.4.3 转换数据类型
+
+清洗完格式后，通常需要将列转换为正确的数据类型，以便进行后续的统计或计算。
+
+```python title = "05.Pandas-数据清洗.ipynb"
+import pandas as pd
+
+df = pd.read_csv("data/sales.csv")
+
+# 将"订单日期"列转换为 datetime 类型
+df["订单日期"] = pd.to_datetime(df["订单日期"])
+
+# 查看转换后的数据类型
+df.dtypes
+```
+
+::: info 说明
+使用 `pd.to_datetime()` 可以将字符串格式的日期转换为 Pandas 的 `datetime64` 类型，从而支持按年、月、日进行筛选和聚合分析。
+:::
+
+## 9.数据排序与分组
+
+在进行数据排序时，有两种排序方式，分别是：升序和降序。而基于Pandas进行数据排序时，可以按照多个列进行排序的。
+
+### 9.1 数据排序
+
+使用 `sort_values()` 方法可以根据一列或多列的值对 DataFrame 进行排序。
+
+::: info 常用参数
+- `by`：指定用于排序的列名（字符串）或列名列表
+- `ascending`：排序顺序，`True` 为升序（默认），`False` 为降序。如果是多列排序，可以传入布尔值列表
+- `inplace`：是否原地修改，默认为 `False`
+- `na_position`：缺失值的位置，`'last'`（默认）或 `'first'`
+:::
+
+#### 9.1.1 单列降序排序
+
+以下示例根据"销售数量"列进行降序排列，查看销量最高的记录：
+
+```python title = "06.Pandas-数据排序与分组.ipynb"
+import pandas as pd
+
+# 仅读取前10行用于演示
+df = pd.read_csv("data/sales.csv", nrows=10)
+
+# 根据销售数量倒序排序
+df.sort_values("销售数量", ascending=False)
+```
+
+运行结果:
+
+![单列降序排序](/assets/image/code/python/analysis/pandas/sort-by-single-column-desc.png)
+
+#### 9.1.2 单列升序排序
+
+以下示例根据"单价"列进行升序排列，查看价格最低的商品：
+
+```python title = "06.Pandas-数据排序与分组.ipynb"
+import pandas as pd
+
+df = pd.read_csv("data/sales.csv", nrows=10)
+
+# 根据单价升序排序
+df.sort_values("单价")
+```
+
+运行结果:
+
+![单列升序排序](/assets/image/code/python/analysis/pandas/sort-by-single-column-asc.png)
+
+#### 9.1.3 多列组合排序
+
+当第一列的值相同时，可以根据第二列进行二次排序。以下示例先按"单价"升序，单价相同时再按"销售数量"降序：
+
+```python title = "06.Pandas-数据排序与分组.ipynb"
+import pandas as pd
+
+df = pd.read_csv("data/sales.csv", nrows=10)
+
+# 根据单价升序排序，价格相同再根据销售数量倒序排序
+df.sort_values(["单价", "销售数量"], ascending=[True, False])
+```
+
+运行结果:
+
+![多列组合排序](/assets/image/code/python/analysis/pandas/sort-by-multiple-columns.png)
+
+::: info 说明
+- 如果 `ascending` 是单个布尔值（如 `True`），它将应用于所有指定的列。
+- 如果 `ascending` 是列表，其长度**必须**与 `by` 参数的列数一致，否则会抛出 `ValueError`。
+:::
+
+### 9.2 数据分组
+
+使用 `groupby()` 方法可以将数据按照一个或多个列进行分组，然后对每个组应用聚合函数（如求和、计数、均值等），从而发现数据的内在规律。
+
+#### 9.2.1 分组计数
+
+统计每个产品类别下的订单数量：
+
+```python title = "06.Pandas-数据排序与分组.ipynb"
+import pandas as pd
+
+df = pd.read_csv("data/sales.csv", nrows=20)
+
+# 根据产品类别分组，统计各个类别的订单数量
+df.groupby("产品类别")["订单号"].count()
+```
+
+运行结果:
+
+```
+产品类别
+图书      5
+家居用品    3
+服装      3
+电子产品    4
+食品      5
+Name: 订单号, dtype: int64
+```
+
+#### 9.2.2 分组求和
+
+计算每个产品类别的销售数量总和：
+
+```python title = "06.Pandas-数据排序与分组.ipynb"
+import pandas as pd
+
+df = pd.read_csv("data/sales.csv", nrows=20)
+
+# 根据产品类别分组，统计各个类别的销售数量之和
+df.groupby("产品类别")["销售数量"].sum()
+```
+
+运行结果:
+
+```
+产品类别
+图书      25
+家居用品    26
+服装      23
+电子产品    27
+食品      21
+Name: 销售数量, dtype: int64
+```
+
+#### 9.2.3 分组计算衍生指标
+
+先计算每条记录的销售金额，再按类别统计总金额：
+
+```python title = "06.Pandas-数据排序与分组.ipynb"
+import pandas as pd
+
+df = pd.read_csv("data/sales.csv", nrows=20)
+
+# 根据产品类别分组，统计各个类别的销售金额之和
+df["销售金额"] = df["单价"] * df["销售数量"]
+df.groupby("产品类别")["销售金额"].sum()
+```
+
+运行结果:
+
+```
+产品类别
+图书      1115
+家居用品    4274
+服装      4981
+电子产品    6943
+食品       689
+Name: 销售金额, dtype: int64
+```
+
+#### 9.2.4 分组求最小值
+
+```python title = "06.Pandas-数据排序与分组.ipynb"
+import pandas as pd
+
+df = pd.read_csv("data/sales.csv", nrows=20)
+
+# 根据产品类别分组，统计各个类别的最低商品单价
+df.groupby("产品类别")["单价"].min()
+```
+
+运行结果:
+
+```
+产品类别
+图书      29
+家居用品    49
+服装     -29
+电子产品    89
+食品      19
+Name: 单价, dtype: int64
+```
+
+::: info 说明
+结果中出现了负数（-29），这通常是数据异常，需要在分析前进行清洗。
+:::
+
+#### 9.2.5 分组求最大值
+
+查找每个产品类别中的最高单价：
+
+```python title = "06.Pandas-数据排序与分组.ipynb"
+import pandas as pd
+
+df = pd.read_csv("data/sales.csv", nrows=20)
+
+# 根据产品类别分组，统计各个类别的最高商品单价
+df.groupby("产品类别")["单价"].max()
+```
+
+运行结果:
+
+```
+产品类别
+图书       99
+家居用品    199
+服装      399
+电子产品    399
+食品       79
+Name: 单价, dtype: int64
+```
+
+#### 9.2.6 多指标聚合（单列）
+
+使用 `agg()` 方法可以同时对同一列应用多个聚合函数：
+
+```python title = "06.Pandas-数据排序与分组.ipynb"
+import pandas as pd
+
+df = pd.read_csv("data/sales.csv", nrows=20)
+
+# 根据产品类别分组，统计各个类别的平均单价、最高单价、最低单价
+df.groupby("产品类别")["单价"].agg(["mean", "max", "min"])
+df.groupby("产品类别").agg({"单价": ["mean", "max", "min"]})
+```
+
+运行结果:
+
+![单列多指标聚合](/assets/image/code/python/analysis/pandas/groupby-single-column-multi-agg.png)
+
+#### 9.2.7 多指标聚合（多列）
+
+可以对不同的列应用不同的聚合函数，实现复杂的统计分析：
+
+```python title = "06.Pandas-数据排序与分组.ipynb"
+import pandas as pd
+
+df = pd.read_csv("data/sales.csv", nrows=20)
+
+# 根据产品类别分组，统计各个类别的商品的销售数量之和，销售金额之和，平均单价
+df.groupby("产品类别").agg({"销售数量": "sum", "销售金额": "sum", "单价": "mean"})
+```
+
+运行结果:
+
+![多列多指标聚合](/assets/image/code/python/analysis/pandas/groupby-multi-column-multi-agg.png)
+
+::: tip
+`agg()` 方法非常强大，支持传入字典来为不同列指定不同的聚合逻辑，是数据分析中最常用的工具之一。
+:::
