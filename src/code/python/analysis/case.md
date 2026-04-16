@@ -203,3 +203,4 @@ ax2.grid(axis="y", linestyle="--", alpha=0.3)
 运行结果:
 
 ![电影数量变化趋势](/assets/image/code/python/analysis/case/yearly-movie-trend-line.png)
+
