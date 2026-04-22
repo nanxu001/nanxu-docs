@@ -1,7 +1,6 @@
 ---
 title: Pandas
 icon: fas:chart-bar
-date: 2026-04-11
 order: 2
 ---
 
