@@ -26,6 +26,13 @@ export default sidebar({
       prefix: "analysis/",
       link: "analysis/",
       children: "structure"
+    },
+    {
+      text: "多线程",
+      icon: "fas:project-diagram",
+      prefix: "multithreading/",
+      link: "multithreading/",
+      children: "structure"
     }
   ],
   "/code/": [
@@ -42,7 +49,7 @@ export default sidebar({
       icon: "fab:python",
       prefix: "python/",
       link: "python/",
-      children: ["guide/", "analysis/"]
+      children: ["guide/", "analysis/", "multithreading/"]
     }
   ],
   "/": [
