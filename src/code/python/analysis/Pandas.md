@@ -365,8 +365,6 @@ Pandas 使用 `to_xxx` 系列方法将数据写入文件，常用的有：
 `df.to_json()`：写入 JSON 文件
 `df.to_sql()`：写入 SQL 数据库
 
-`index=False`：不写入索引列
-
 ```python title = "04.Pandas-数据读取与写入.ipynb"
 import pandas as pd
 
