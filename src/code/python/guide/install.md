@@ -28,7 +28,7 @@ order: 1
 
 5. 如果忘记勾选 `Add Python * to PATH`，可以通过以下方式手动配置环境变量：
    - 打开Python安装目录，点击上方地址栏复制路径
-   - 打开控制面板 → 系统和安全 → 系统 → 高级系统设置
+   - 打开设置 → 系统信息 → 高级系统设置
 
     ![高级系统设置](/assets/image/code/python/guide/install/system-info.png)
 
