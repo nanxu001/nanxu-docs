@@ -28,6 +28,13 @@ export default sidebar({
       children: "structure"
     },
     {
+      text: "Web 开发",
+      icon: "fas:laptop-code",
+      prefix: "web/",
+      link: "web/",
+      children: "structure"
+    },
+    {
       text: "多线程",
       icon: "fas:project-diagram",
       prefix: "multithreading/",
@@ -49,7 +56,7 @@ export default sidebar({
       icon: "fab:python",
       prefix: "python/",
       link: "python/",
-      children: ["guide/", "analysis/", "multithreading/"]
+      children: ["guide/", "analysis/", "web/", "multithreading/"]
     }
   ],
   "/": [
