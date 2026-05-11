@@ -1,7 +1,7 @@
 ---
 title: 继承
 icon: fas:dna
-order: 0
+order: 2
 ---
 
 ## 1.概述
@@ -238,11 +238,11 @@ if __name__ == '__main__':
 从 MRO 顺序可以看出：`WenJieCar` -> `Car` -> `HuaweiAiDriving` -> `object`。 因此，当调用 `c1.run()` 时，Python 会先在 `WenJieCar` 中找，没找到则去 `Car` 中找。由于 `Car` 中有 `run` 方法，所以直接执行了 `Car` 的逻辑，而忽略了 `HuaweiAiDriving` 中的 `run`。
 :::
 
-### 5.4 显式调用多个父类方法
+## 5.4 显式调用多个父类方法
 
 如果希望同时执行两个父类中的逻辑，可以在子类中**重写**该方法并显式调用：
 
-```
+```python title = "04.面向对象高级-继承(多继承).py"
 def run(self):
     Car.run(self)
     HuaweiAiDriving.run(self)
