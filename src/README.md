@@ -5,7 +5,7 @@ hero: true
 icon: house
 title: 主页
 heroImage: "/logo.webp"
-bgImage: https://tu.ltyuanfang.cn/api/fengjing.php
+bgImage: https://bing.img.run/rand.php
 bgImageStyle:
   background-attachment: fixed
 heroFullScreen: true
