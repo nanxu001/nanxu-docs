@@ -36,9 +36,21 @@ Restful 指的是遵循 REST 架构风格的 API 接口服务，而 REST（REpre
 
 **汉字谜盒**是一款基于人工智能的字谜互动游戏，专为汉字爱好者设计。在这里，你将与AI机器人进行有趣的猜字挑战！AI会随机出一道经典字谜（如"一箭穿心"），你需要根据谜面提示猜出对应的汉字，AI会根据你的回答给出相应的提示，并给出最终的答案。
 
-## 3.基础环境搭建
+## 3.FastAPI
 
-### 3.1 创建 FastAPI 应用
+
+[FastAPI](https://fastapi.org.cn/) 是一个用于构建 API 的现代、快速（高性能）的 Web 框架，使用 Python 3.6+ 并基于标准的 Python 类型提示。
+
+### 核心优势
+
+*   **极速性能**：基于 Starlette 和 Pydantic，性能比肩 NodeJS 和 Go，是目前最快的 Python 框架之一。
+*   **高效开发**：代码简洁，功能强大，能减少约 40% 的人为错误。
+*   **自动文档**：自动生成符合 OpenAPI 标准的交互式文档（Swagger UI 和 ReDoc），无需手动编写接口文档。
+*   **数据校验**：利用 Python 类型提示进行严格的数据校验，确保输入输出数据的准确性。
+
+## 4.基础环境搭建
+
+### 4.1 创建 FastAPI 应用
 
 创建一个基础的 FastAPI 实例，并定义根路径 `/` 返回前端首页 `index.html`。
 
@@ -60,7 +72,7 @@ if __name__ == '__main__':
 
 此时启动项目并访问 `http://127.0.0.1:8000`，虽然能看到页面内容，但你会发现**页面没有样式**（CSS、JS、图片等资源加载失败）。这是因为 FastAPI 默认不会自动处理静态文件的请求。
 
-### 3.2 挂载静态文件目录
+### 4.2 挂载静态文件目录
 
 为了解决样式丢失的问题，我们需要使用 `StaticFiles` 将本地的静态资源目录“挂载”到特定的 URL 路径上。
 
@@ -92,11 +104,11 @@ if __name__ == '__main__':
 - 目录结构建议：确保你的项目根目录下有一个名为 `static` 的文件夹，并将 `index.html`、`.css`、`.js` 等文件放入其中。
 :::
 
-## 4.新建会话
+## 5.新建会话
 
 在打开该项目页面时，如果之前没有会话，则要自动创建一个会话，会话标识形式如 2026-04-15_12-00-05。
 
-### 4.1 创建会话存放目录
+### 5.1 创建会话存放目录
 
 当项目启动时，需要判断会话存放目录 session 是否存在，如果不存在需要进行创建。
 
@@ -108,7 +120,7 @@ if not os.path.exists("sessions"):
     os.mkdir("sessions")
 ```
 
-### 4.2 创建会话
+### 5.2 创建会话
 
 ```python title = "main.py"
 import json
@@ -138,9 +150,9 @@ def creat_session():
     return {"code": 200, "message": "创建会话成功", "data": session_id}
 ```
 
-### 4.3 使用响应模型 (Response Model)
+### 5.3 使用响应模型 (Response Model)
 
-在传统的 API 开发中，手动返回 `dict` 类型的数据容易出现拼写错误（如将 `message` 写成 `msg`），且缺乏类型约束。FastAPI 提供了强大的[**响应模型**](https://fastapi.org.cn/tutorial/response-model/)机制，通过结合 **Pydantic** 库，我们可以：
+在传统的 API 开发中，手动返回 `dict` 类型的数据容易出现拼写错误（如将 `message` 写成 `msg`），且缺乏类型约束。FastAPI 提供了强大的[响应模型](https://fastapi.org.cn/tutorial/response-model/)机制，通过结合 **Pydantic** 库，我们可以：
 
 1.  **定义数据结构**：使用继承自 `BaseModel` 的类来明确返回值的字段和类型。
 2.  **自动校验与转换**：FastAPI 会自动校验返回值是否符合模型定义，并将其转换为标准的 JSON 格式。
