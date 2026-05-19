@@ -162,6 +162,7 @@ export default hopeTheme({
     },
 
     seo: {
+      canonical: "https://www.nanxu.online",
       customHead: (head) => {
         // 百度
         head.push([
