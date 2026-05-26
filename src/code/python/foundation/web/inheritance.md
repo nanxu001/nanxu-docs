@@ -209,7 +209,7 @@ class HuaweiAiDriving:
 
 class WenJieCar(Car, HuaweiAiDriving):
     def __init__(self, brand, model, color, owner, version="V1.0"):
-        s# 初始化 Car 部分
+        # 初始化 Car 部分
         super().__init__(brand, model, color, owner)
         # 初始化 HuaweiAiDriving 部分
         HuaweiAiDriving.__init__(self, version)

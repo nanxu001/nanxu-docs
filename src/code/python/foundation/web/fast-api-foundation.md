@@ -72,7 +72,7 @@ uvicorn 08_FastAPI入门:app --reload
 ::: info 参数说明
 - `08_FastAPI入门`: Python 脚本的文件名（不带 .py 后缀）。
 - `app`: 在代码中创建的 FastAPI 实例变量名（即 `app = FastAPI()`）。
-- `--reload`: 开启自动重载模式，当代码发生变化时服务器会自动重启。 :::
+- `--reload`: 开启自动重载模式，当代码发生变化时服务器会自动重启。
 :::
 
 #### 方式三：在代码中直接启动（推荐）

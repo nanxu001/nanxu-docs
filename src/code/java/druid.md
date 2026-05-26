@@ -1,5 +1,5 @@
 ---
-title: Druid 线程池
+title: Druid 连接池
 icon: fas:database
 order: 2
 ---

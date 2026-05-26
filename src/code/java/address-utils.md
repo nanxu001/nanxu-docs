@@ -1,7 +1,7 @@
 ---
 title: 地址工具类
 icon: fas:map
-order: 8
+order: 6
 ---
 
 地址工具类通过集成高德地图 API 实现根据用户 IP 地址查询地理位置信息的功能。
@@ -14,7 +14,7 @@ order: 8
 
 ### 1.2 配置参数
 
-- `addre.url`: 高德地图 IP 定位 API 的请求地址
+- `address.url`: 高德地图 IP 定位 API 的请求地址
 - `address.key`: 高德地图开发者密钥，用于 API 调用认证
 
 ## 2.工具类实现

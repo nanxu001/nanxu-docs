@@ -80,7 +80,7 @@ if __name__ == '__main__':
 下面通过多线程模拟小明一边编写代码，一边听音乐的场景：
 
 ```python title = "16.带参数的多线程.py"
-import multiprocessing, time
+import threading, time
 
 def coding(name, count):
     for i in range(1, count + 1):

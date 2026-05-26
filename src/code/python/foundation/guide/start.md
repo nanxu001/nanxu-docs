@@ -29,7 +29,7 @@ order: 2
 
 ## 3.编写代码
 
-1. 编写代码输出输出Hello World，Hello Python。
+1. 编写代码输出Hello World，Hello Python。
 
 ```python title = "入门程序.py"
 print("Hello World")

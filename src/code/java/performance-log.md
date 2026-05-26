@@ -32,7 +32,7 @@ order: 10
 public class PerformanceLogAspect {
     private final UnifiedLogService logService;
 
-    @Around("execution(* com.nanxu.controller..*(..))*")
+    @Around("execution(* com.nanxu.controller..*(..))")
     public Object logPerformance(ProceedingJoinPoint joinPoint) throws Throwable {
         long startTimeMillis = System.currentTimeMillis();
         try {
@@ -143,8 +143,7 @@ public class PerformanceLog {
 
 ```java title="UnifiedLogEventListener.java"
 @Async
-@EventListener
-@TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+@TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT, fallbackExecution = true)
 public void handlePerformanceLogEvent(PerformanceLogEvent event) {
     PerformanceLog log = new PerformanceLog();
 

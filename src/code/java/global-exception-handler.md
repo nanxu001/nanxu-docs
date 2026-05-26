@@ -49,7 +49,7 @@ public class GlobalExceptionHandler {
 
 封装异常相关的信息，包括请求上下文、异常详情等。
 
-```java title="ExceptionLogEvent.class"
+```java title="ExceptionLogEvent.java"
 @Getter
 public class ExceptionLogEvent extends BaseLogEvent {
     /**
@@ -86,7 +86,9 @@ public class ExceptionLogEvent extends BaseLogEvent {
         super(source);
         this.uri = request.getRequestURI();
         this.method = request.getMethod();
-        this.username = SecurityUtils.getLoginUser().getUsername();
+        // 未登录用户触发异常时 getLoginUser() 可能为 null
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        this.username = loginUser != null ? loginUser.getUsername() : "anonymous";
         this.exceptionClass = e.getClass().getName();
         this.msg = e.getMessage();
         this.stackTrace = getStackTraceAsString(e);
@@ -200,7 +202,6 @@ private final SysExceptionService exceptionService;
  */
 @Async
 @EventListener
-@TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
 public void handleExceptionLogEvent(ExceptionLogEvent event) {
     SysExceptionLog log = new SysExceptionLog();
     log.setUri(event.getUri());

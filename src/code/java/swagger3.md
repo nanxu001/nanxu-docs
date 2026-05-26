@@ -1,7 +1,7 @@
 ---
 title: Swagger3
 icon: far:file-lines
-order: 4
+order: 7
 ---
 
 ## 1.引入 Swagger3

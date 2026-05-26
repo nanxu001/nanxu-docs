@@ -209,7 +209,6 @@ public class UnifiedLogEventListener {
      * @param event 登录日志事件
      */
     @Async
-    @EventListener
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handleLoginLogEvent(LoginLogEvent event) {
         SysLoginLog log = new SysLoginLog();

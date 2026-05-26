@@ -561,7 +561,7 @@ def borrow_book(self):
         :return:
         """
         # 展示出当前图书馆的图书列表
-        for book in self.books:
+        for book in self.books.values():
             print(f"编号: {book.book_id}, 标题: {book.title}, 作者: {book.author}, 总数: {book.total_num}, 可用: {book.get_available_num()}")
 
         # 获取用户输入的图书编号，执行借书操作

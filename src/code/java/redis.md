@@ -79,9 +79,9 @@ public class RedisConfig {
 
         // 创建FastJson2JsonRedisSerializer，用于将对象序列化为JSON格式
         FastJson2JsonRedisSerializer<Object> fastJson2JsonRedisSerializer = new FastJson2JsonRedisSerializer<>(Object.class);
-        // value序列化方式采用jackson
+        // value序列化方式采用fastJson2
         template.setValueSerializer(fastJson2JsonRedisSerializer);
-        // hash的value序列化方式采用jackson
+        // hash的value序列化方式采用fastJson2
         template.setHashValueSerializer(fastJson2JsonRedisSerializer);
 
         // 初始化模板属性
