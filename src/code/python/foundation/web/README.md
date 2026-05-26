@@ -1,6 +1,6 @@
 ---
 title: Web 开发
-icon: fas:laptop-code
+icon: fas:globe
 index: false
 dir:
     order: 3

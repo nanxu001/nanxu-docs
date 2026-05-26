@@ -1,6 +1,6 @@
 ---
 title: Swagger3
-icon: far:fa-file-lines
+icon: far:file-lines
 order: 4
 ---
 

@@ -6,3 +6,4 @@ src/.vuepress/dist
 /.vscode/
 .nvmrc
 src/.vuepress/verification.config.ts
+.claude/settings.local.json

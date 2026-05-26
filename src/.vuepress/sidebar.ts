@@ -15,30 +15,16 @@ export default sidebar({
     "",
     {
       text: "基础教程",
-      icon: "fas:book-open",
-      prefix: "guide/",
-      link: "guide/",
+      icon: "fas:layer-group",
+      prefix: "foundation/",
+      link: "foundation/",
       children: "structure"
     },
     {
-      text: "数据分析",
-      icon: "fas:chart-line",
-      prefix: "analysis/",
-      link: "analysis/",
-      children: "structure"
-    },
-    {
-      text: "Web 开发",
-      icon: "fas:laptop-code",
-      prefix: "web/",
-      link: "web/",
-      children: "structure"
-    },
-    {
-      text: "多线程",
-      icon: "fas:project-diagram",
-      prefix: "multithreading/",
-      link: "multithreading/",
+      text: "进阶教程",
+      icon: "fas:arrow-trend-up",
+      prefix: "advanced/",
+      link: "advanced/",
       children: "structure"
     }
   ],
@@ -56,7 +42,7 @@ export default sidebar({
       icon: "fab:python",
       prefix: "python/",
       link: "python/",
-      children: ["guide/", "analysis/", "web/", "multithreading/"]
+      children: ["foundation/", "advanced/"]
     }
   ],
   "/": [

@@ -65,7 +65,7 @@ data = pd.read_csv("data/movies.csv", nrows=30, usecols=["电影名", "年份", 
 data
 ```
 
-![初步加载数据预览](/assets/image/code/python/analysis/case/load-data-preview.png)
+![初步加载数据预览](/assets/image/code/python/foundation/analysis/case/load-data-preview.png)
 
 #### 1.4.2 发现数据类型问题
 
@@ -103,7 +103,7 @@ data
 
 运行结果:
 
-![修正数据类型后的数据预览](/assets/image/code/python/analysis/case/load-data-with-dtype.png)
+![修正数据类型后的数据预览](/assets/image/code/python/foundation/analysis/case/load-data-with-dtype.png)
 
 ::: info
 - `int64`：传统的 NumPy 整数类型，不支持缺失值（NaN）。
@@ -127,7 +127,7 @@ data.head(30)
 
 运行结果:
 
-![补全年份缺失值](/assets/image/code/python/analysis/case/fill-missing-years.png)
+![补全年份缺失值](/assets/image/code/python/foundation/analysis/case/fill-missing-years.png)
 
 ### 2.2 组装数据
 
@@ -173,7 +173,7 @@ ax1.grid(linestyle="--", alpha=0.3)
 
 运行结果:
 
-![电影数量变化趋势](/assets/image/code/python/analysis/case/yearly-movie-trend-line.png)
+![电影数量变化趋势](/assets/image/code/python/foundation/analysis/case/yearly-movie-trend-line.png)
 
 ## 3.绘制不同语言电影数量柱状图
 
@@ -202,7 +202,7 @@ ax2.grid(axis="y", linestyle="--", alpha=0.3)
 
 运行结果:
 
-![电影数量变化趋势](/assets/image/code/python/analysis/case/language-distribution-bar.png)
+![电影数量变化趋势](/assets/image/code/python/foundation/analysis/case/language-distribution-bar.png)
 
 ## 4.绘制不同类型电影数量柱状图
 
@@ -235,7 +235,7 @@ ax3.grid(axis="y", linestyle="--", alpha=0.3)
 
 运行结果:
 
-![电影数量变化趋势](/assets/image/code/python/analysis/case/movie-genre-distribution.png)
+![电影数量变化趋势](/assets/image/code/python/foundation/analysis/case/movie-genre-distribution.png)
 
 ## 5.统计各个评分的电影占比
 
@@ -268,7 +268,7 @@ ax4.legend(loc="lower center", ncol=4, bbox_to_anchor=(0.5, -0.2))
 
 运行结果:
 
-![电影数量变化趋势](/assets/image/code/python/analysis/case/score-distribution-pie.png)
+![电影数量变化趋势](/assets/image/code/python/foundation/analysis/case/score-distribution-pie.png)
 
 ## 6.完整代码
 
@@ -370,4 +370,4 @@ plt.show()
 
 运行结果:
 
-![TMDB-TOP300](/assets/image/code/python/analysis/case/TMDB-TOP300.png)
+![TMDB-TOP300](/assets/image/code/python/foundation/analysis/case/TMDB-TOP300.png)

@@ -1,6 +1,6 @@
 ---
 title: Druid 线程池
-icon: database
+icon: fas:database
 order: 2
 ---
 

@@ -1,6 +1,6 @@
 ---
 title: 代码笔记
-icon: code
+icon: fas:code
 index: false
 ---
 

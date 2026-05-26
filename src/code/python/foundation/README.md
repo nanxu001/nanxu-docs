@@ -1,6 +1,6 @@
 ---
-title: 基础教程
-icon: fas:book-open
+title: Python 基础
+icon: fas:layer-group
 index: false
 dir:
     order: 1

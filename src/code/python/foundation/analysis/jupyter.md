@@ -1,6 +1,6 @@
 ---
 title: Jupyter Notebook
-icon: fas:flask
+icon: fas:book
 order: 1
 ---
 
@@ -11,7 +11,7 @@ order: 1
 
 在资源管理器中右键点击目标文件夹，选择"新建 Jupyter Notebook"。如果是首次使用，PyCharm 会自动下载并配置必要的 Python 依赖包。
 
-![新建Jupyter Notebook](/assets/image/code/python/analysis/jupyter/create.png)
+![新建Jupyter Notebook](/assets/image/code/python/foundation/analysis/jupyter/create.png)
 
 ## 2.编写代码
 
@@ -33,15 +33,15 @@ a + b + c
 
 2. 点击右上角的 `IDE 托管服务器`。
 
-![IDE 托管服务器](/assets/image/code/python/analysis/jupyter/config.png)
+![IDE 托管服务器](/assets/image/code/python/foundation/analysis/jupyter/config.png)
 
 3. 选择 `配置 Jupyter 服务器`，在弹出的窗口中点击 + 号，选择 `正在运行本地服务器`，系统将自动安装 Jupyter。
 
-![添加正在运行本地服务器](/assets/image/code/python/analysis/jupyter/add-local-server.png)
+![添加正在运行本地服务器](/assets/image/code/python/foundation/analysis/jupyter/add-local-server.png)
 
 4. 安装完成后会提示 `没有正在运行的本地服务器`。关闭配置页面，在命令行执行 `jupyter lab` 命令，系统会自动运行并打开浏览器。
 
-![运行 Jupyter](/assets/image/code/python/analysis/jupyter/run-jupyter.png)
+![运行 Jupyter](/assets/image/code/python/foundation/analysis/jupyter/run-jupyter.png)
 
 5. 回到第 3 步重新添加本地服务器，此时系统会自动识别刚刚运行的 Jupyter 服务器，直接添加即可。
 
@@ -49,7 +49,7 @@ a + b + c
 
 > 既然已经自动打开浏览器了为什么还要在这里打开呢，我不明白(奉化口音)
 
-![在浏览器打开 Notebook](/assets/image/code/python/analysis/jupyter/open-on-browser.png)
+![在浏览器打开 Notebook](/assets/image/code/python/foundation/analysis/jupyter/open-on-browser.png)
 
 ::: warning
 控制台中的 Jupyter 服务器关闭后，Notebook 将无法执行代码，此时需要重新启动 Jupyter 服务器。

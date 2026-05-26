@@ -1,6 +1,6 @@
 ---
 title: 全局异常处理
-icon: fas:fa-bug
+icon: fas:bug
 order: 11
 ---
 

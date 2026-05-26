@@ -1,9 +1,9 @@
 ---
 title: 多线程
-icon: fas:project-diagram
+icon: fas:arrows-spin
 index: false
 dir:
-    order: 4
+    order: 1
 ---
 
 <Catalog />

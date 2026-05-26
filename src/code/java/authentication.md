@@ -1,6 +1,6 @@
 ---
 title: Spring Security 认证
-icon: fas:fa-user-lock
+icon: fas:user-lock
 star: true
 order: 5
 ---

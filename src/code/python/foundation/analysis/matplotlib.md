@@ -35,7 +35,7 @@ plt.show()
 
 运行结果:
 
-![绘制基础折线图](/assets/image/code/python/analysis/matplotlib/basic-line-chart.png)
+![绘制基础折线图](/assets/image/code/python/foundation/analysis/matplotlib/basic-line-chart.png)
 
 ::: warning
 `x` 轴与 `y` 轴的数据长度必须保持一致。如果两者长度不匹配，Matplotlib 会抛出 `ValueError` 异常，导致绘图失败。
@@ -68,7 +68,7 @@ plt.show()
 
 运行结果:
 
-![自定义画布大小](/assets/image/code/python/analysis/matplotlib/custom-figure-size.png)
+![自定义画布大小](/assets/image/code/python/foundation/analysis/matplotlib/custom-figure-size.png)
 
 ::: info 参数说明
 - `figsize`：接收一个元组 `(width, height)`，分别代表画布的宽和高（单位：英寸）。
@@ -106,7 +106,7 @@ plt.show()
 
 运行结果:
 
-![设置图表标题](/assets/image/code/python/analysis/matplotlib/set-chart-title.png)
+![设置图表标题](/assets/image/code/python/foundation/analysis/matplotlib/set-chart-title.png)
 
 ::: info 参数说明
 `label`：标题的文本内容。
@@ -155,7 +155,7 @@ plt.show()
 
 运行结果:
 
-![自定义坐标轴刻度](/assets/image/code/python/analysis/matplotlib/custom-axis-ticks.png)
+![自定义坐标轴刻度](/assets/image/code/python/foundation/analysis/matplotlib/custom-axis-ticks.png)
 
 ::: tip
 - 如果刻度太密集导致重叠，可以使用切片来稀疏显示，例如 `plt.xticks(x[::2])` 表示每隔一个点显示一个刻度。
@@ -205,7 +205,7 @@ plt.show()
 
 运行结果:
 
-![自定义坐标轴刻度](/assets/image/code/python/analysis/matplotlib/plot-with-grid.png)
+![自定义坐标轴刻度](/assets/image/code/python/foundation/analysis/matplotlib/plot-with-grid.png)
 
 ::: tip
 - **只显示某轴的网格**：`plt.grid(axis='x')` 或 `plt.grid(axis='y')`。
@@ -256,7 +256,7 @@ plt.show()
 
 运行结果:
 
-![多折线对比与图例](/assets/image/code/python/analysis/matplotlib/multi-line-plot-with-legend.png)
+![多折线对比与图例](/assets/image/code/python/foundation/analysis/matplotlib/multi-line-plot-with-legend.png)
 
 ::: tip
 - **自定义样式**：可以在 `plot()` 中通过 `color`（颜色）、`linestyle`（线型）、`marker`（标记点）来进一步区分不同线条。
@@ -321,4 +321,4 @@ plt.show()
 
 运行结果:
 
-![子图布局与柱状图](/assets/image/code/python/analysis/matplotlib/subplot-combined-layout.png)
+![子图布局与柱状图](/assets/image/code/python/foundation/analysis/matplotlib/subplot-combined-layout.png)
