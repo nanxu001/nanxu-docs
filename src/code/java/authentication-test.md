@@ -3,6 +3,7 @@ title: 认证功能测试
 icon: fas:flask
 order: 12
 index: false
+article: false
 ---
 
 完成 Spring Security 认证授权功能的开发后，可通过以下前端页面进行功能验证。请将页面文件放置在 `/resources/statics` 目录下。
