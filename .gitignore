@@ -7,3 +7,5 @@ src/.vuepress/dist
 .nvmrc
 src/.vuepress/verification.config.ts
 .claude/settings.local.json
+CLAUDE.md
+.mcp.json
