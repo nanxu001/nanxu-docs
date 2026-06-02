@@ -18,14 +18,14 @@ if 要判断的条件:
 **示例**：高考分数超过 680 分就去清华。
 
 ```python title = "05.if条件判断.py"
-score = 695
+score = 700
 if score > 680:
     print("欢迎你来清华读书")
     print("也恭喜即将踏入精彩的大学生活")
 print("--------------------")
 ```
 
-运行结果（score = 695，条件成立）：
+运行结果（score = 700，条件成立）：
 
 ```
 欢迎你来清华读书
@@ -296,7 +296,8 @@ while j <= 100:
     if j % 2 == 0:
         total += j
     j += 1
-print(f"1-100之间所有偶数的累加之和：{total}")
+else:
+    print(f"1-100之间所有偶数的累加之和：{total}")
 ```
 
 运行结果：
@@ -315,6 +316,8 @@ print(f"1-100之间所有偶数的累加之和：{total}")
 for 元素 in 待处理数据集:
     循环体语句
 ```
+
+遍历字符串中的每个字符：
 
 ```python title = "08.for循环.py"
 msg = "Hello Python"
@@ -373,3 +376,106 @@ print(f"100-500之间所有3的倍数之和：{total}")
 | 遍历数据集（字符串、列表等） | `for` |
 | 已知循环次数 | `for` + `range` |
 | 条件控制循环（次数未知） | `while` |
+
+### 4.4 嵌套循环
+
+在循环体中再写一个循环，外层循环控制行，内层循环控制列。
+
+**案例**：九九乘法表。
+
+```python title = "08.for循环.py"
+for i in range(1, 10):
+    for j in range(1, i + 1):
+        print(f"{j} * {i} = {i * j}", end="\t")
+    print()
+```
+
+运行结果：
+
+```
+1 * 1 = 1
+1 * 2 = 2   2 * 2 = 4
+1 * 3 = 3   2 * 3 = 6   3 * 3 = 9
+1 * 4 = 4   2 * 4 = 8   3 * 4 = 12  4 * 4 = 16
+...
+```
+
+::: info 说明
+`end="\t"` 表示输出后不换行，而是加一个 Tab 缩进。`print()` 空调用表示换行。
+:::
+
+### 4.5 break 与 continue
+
+`break` 和 `continue` 只能用在循环中，用于控制循环的执行流程。
+
+| 关键字 | 作用 |
+|:---:|:---|
+| `break` | 结束整个循环，跳出循环体 |
+| `continue` | 跳过本次循环，直接进入下一次循环 |
+
+```python title = "08.for循环.py"
+# break 示例：找到第一个能被7整除的数就停止
+for i in range(1, 100):
+    if i % 7 == 0:
+        print(f"找到：{i}")
+        break
+```
+
+运行结果：
+
+```
+找到：7
+```
+
+```python title = "08.for循环.py"
+# continue 示例：跳过偶数，只打印奇数
+for i in range(1, 11):
+    if i % 2 == 0:
+        continue
+    print(i)
+```
+
+运行结果：
+
+```
+1
+3
+5
+7
+9
+```
+
+### 4.6 综合案例：猜数字游戏
+
+系统随机生成一个数字，用户反复猜测，猜对为止。
+
+```python title = "08.for循环.py"
+import random
+
+answer = random.randint(1, 100)
+
+while True:
+    guess = int(input("请猜一个数字（1-100）："))
+    if guess > answer:
+        print("猜大了！")
+    elif guess < answer:
+        print("猜小了！")
+    else:
+        print("恭喜你，猜对了！")
+        break
+```
+
+运行结果：
+
+```
+请猜一个数字（1-100）：50
+猜大了！
+请猜一个数字（1-100）：25
+猜小了！
+请猜一个数字（1-100）：37
+恭喜你，猜对了！
+```
+
+::: warning 注意
+`while True` 表示条件永远为 `True`，是死循环，需要在循环体内用 `break` 退出。
+:::
