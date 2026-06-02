@@ -13,16 +13,9 @@ order: 8
 
 ### 1.2 定义类
 
-使用 `class` 关键字定义类：
+使用 `class` 关键字定义类，类名采用**大驼峰命名法**（每个单词首字母大写）：
 
-```python
-class 类名:
-    pass
-```
-
-**类名命名规范**：大驼峰命名法（每个单词首字母大写）
-
-```python
+```python title = "18.面向对象基础.py"
 class Car:
     pass
 ```
@@ -325,4 +318,171 @@ manager.remove_student("001")
 
 # 再次显示所有学生
 manager.show_all()
+```
+
+### 6.4 完整代码
+
+```python title = "19.面向对象基础案例.py"
+"""
+采用面向对象的编程思想，完成教务管理系统的开发。教务管理系统可以管理在校学生的成绩信息，通过控制台菜单与用户交互，具体的功能如下：
+    1. 添加学生成绩：根据输入的学生姓名、语文成绩、数学成绩、英语成绩，记录在系统中
+        1.1 输入学生姓名、语文成绩、数学成绩、英语成绩
+        1.2 检查学生姓名是否已存在, 如果学生不存在, 再添加 (存在则, 不添加)
+        1.3 验证成绩范围（0-100分）
+        1.4 创建学生对象并添加到系统
+    2. 修改学生成绩：根据输入的学生姓名，修改对应的学生成绩
+        2.1 输入要修改的学生姓名
+        2.2 根据姓名查找该学生, 显示该生当前成绩信息
+        2.3 输入新的语文、数学、英语成绩
+        2.4 更新学生成绩数据
+    3. 删除学生成绩：根据输入的学生姓名，删除对应的学生成绩
+    4. 查询指定学生成绩：根据输入的学生姓名，查找对应的学生成绩，并输出
+        4.1 输出格式为: "姓名：张三 | 语文：85 | 数学：90 | 英语：88 | 总分：263"
+    5. 展示全部学生成绩：展示出系统中所有学生的成绩
+"""
+
+
+# 学生类
+class Student:
+    def __init__(self, name, chinese_score, math_score, english_score):
+        self.name = name
+        self.chinese_score = chinese_score
+        self.math_score = math_score
+        self.english_score = english_score
+
+    def __str__(self):
+        return (f"姓名：{self.name} | 语文：{self.chinese_score} | 数学：{self.math_score} | 英语：{self.english_score} | "
+                f"总分：{self.chinese_score + self.math_score + self.english_score}")
+
+class EduManagement:
+    sys_version = 1.0
+    sys_name = "教务管理系统"
+
+    def __init__(self, students=None):
+        if students is None:
+            students = dict()
+        self.students = students
+
+    def add_student(self):
+        while True:
+            name = input("请输入学生姓名：")
+            if name in [names for names in self.students.keys()]:
+                print("学生已存在")
+                continue
+            break
+
+        while True:
+            chinese_score = int(input("请输入学生语文成绩："))
+            if chinese_score > 100 or chinese_score < 0:
+                print("学生成绩超出范围")
+                continue
+            break
+
+        while True:
+            math_score = int(input("请输入学生数学成绩："))
+            if math_score > 100 or math_score < 0:
+                print("学生成绩超出范围")
+                continue
+            break
+
+        while True:
+            english_score = int(input("请输入学生英语成绩："))
+            if english_score > 100 or english_score < 0:
+                print("学生成绩超出范围")
+                continue
+            break
+
+        self.students[name] = Student(name, chinese_score, math_score, english_score)
+
+    def update_student(self):
+        while True:
+            name = input("请输入学生姓名：")
+            student = self.students.get(name)
+            if student is None:
+                print("学生不存在")
+                continue
+
+            print(student)
+            break
+
+        while True:
+            chinese_score = int(input("请输入学生语文成绩："))
+            if chinese_score > 100 or chinese_score < 0:
+                print("学生成绩超出范围")
+                continue
+            break
+
+        while True:
+            math_score = int(input("请输入学生数学成绩："))
+            if math_score > 100 or math_score < 0:
+                print("学生成绩超出范围")
+                continue
+            break
+
+        while True:
+            english_score = int(input("请输入学生英语成绩："))
+            if english_score > 100 or english_score < 0:
+                print("学生成绩超出范围")
+                continue
+            break
+
+        self.students[name] = Student(name, chinese_score, math_score, english_score)
+
+    def del_student(self):
+        while True:
+            name = input("请输入学生姓名：")
+            student = self.students.get(name)
+            if student is None:
+                print("学生不存在")
+                continue
+
+            del self.students[name]
+            break
+
+    def select_student(self):
+        while True:
+            name = input("请输入学生姓名：")
+            student = self.students.get(name)
+            if student is None:
+                print("学生不存在")
+                continue
+
+            print(student)
+            break
+
+    def select_all_student(self):
+        for students in self.students.values():
+            print(students)
+
+edu_management = EduManagement(dict())
+
+while True:
+    print("=============================================")
+    print(f"              {EduManagement.sys_name} v{EduManagement.sys_version}")
+    print("               1.添加学生成绩")
+    print("               2.修改学生成绩")
+    print("               3.删除学生成绩")
+    print("               4.查询学生成绩")
+    print("               5.查询所有学生成绩")
+    print("               6.退出")
+    print("=============================================")
+
+    oper = input("请选择要进行的操作：")
+    match oper:
+        case "1":
+            edu_management.add_student()
+        case "2":
+            edu_management.update_student()
+        case "3":
+            edu_management.del_student()
+        case "4":
+            edu_management.select_student()
+        case "5":
+            edu_management.select_all_student()
+        case "6":
+            print("退出系统")
+            break
+        case _:
+            print("请选择正确的操作！！！")
+            continue
 ```
