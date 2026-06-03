@@ -248,3 +248,122 @@ def get_movie_duration(movie_duration):
 - `group(1)` 获取分组中捕获的内容
 - 如果未匹配到，返回 None，使用三元表达式处理
 :::
+
+
+## 4.完整代码
+
+```python title="08.网络机器人-案例(优化).py"
+from lxml import html
+import requests
+import csv
+import re
+
+BASE_URL = "https://www.themoviedb.org"
+URL_1 = "https://www.themoviedb.org/movie/top-rated"
+URL_2 = "https://www.themoviedb.org/discover/movie/items"
+
+
+def get_movie_year(movie_year):
+    """
+    获取电影年份
+    :param movie_year: 电影年份
+    :return: 电影年份
+    """
+    movie_year = movie_year[0].strip() if movie_year else ""
+    return movie_year.replace("(", "").replace(")", "")
+
+
+def get_movie_release_date(movie_release_date):
+    """
+    获取电影上映时间
+    :param movie_release_date: 电影上映时间
+    :return: 电影上映时间
+    """
+    movie_release_date = movie_release_date[0].strip() if movie_release_date else ""
+    return re.search(r"\d{4}-\d{2}-\d{2}", movie_release_date).group()
+
+
+def get_movie_duration(movie_duration):
+    """
+    获取电影时长
+    :param movie_duration: 电影时长
+    :return: 电影时长
+    """
+    movie_duration = movie_duration[0].strip() if movie_duration else ""
+    hour = re.search(r"(\d*)h", movie_duration)
+    minute = re.search(r"(\d*)m", movie_duration)
+
+    hour = int(hour.group(1)) if hour else 0
+    minute = int(minute.group(1)) if minute else 0
+    return 60 * hour + minute
+
+
+def get_movie_info(movie_info_url):
+    dict_data: dict[str, str] = {}
+
+    movie_response = requests.get(movie_info_url)
+    movie_doc = html.fromstring(movie_response.text)
+
+    movie_name = movie_doc.xpath("//*[@id='original_header']/div[2]/section/div[1]/h2/a/text()")
+    dict_data["电影名"] = movie_name[0].strip() if movie_name else ""
+    movie_year = movie_doc.xpath("//*[@id='original_header']/div[2]/section/div[1]/h2/span/text()")
+    dict_data["年份"] = get_movie_year(movie_year)
+    movie_release_date = movie_doc.xpath("//*[@id='original_header']/div[2]/section/div[1]/div/span[@class='release']/text()")
+    dict_data["上映时间"] = get_movie_release_date(movie_release_date)
+    movie_type_list = movie_doc.xpath("//*[@id='original_header']/div[2]/section/div[1]/div/span[@class='genres']/a/text()")
+    movie_type = "和".join(movie_type_list) if movie_type_list else ""
+    dict_data["类型"] = movie_type
+    movie_duration = movie_doc.xpath("//*[@id='original_header']/div[2]/section/div[1]/div/span[@class='runtime']/text()")
+    dict_data["时长"] = str(get_movie_duration(movie_duration))
+    movie_percent = movie_doc.xpath("//*[@id='consensus_pill']/div/div[1]/div/div/@data-percent")
+    dict_data["评分"] = movie_percent[0].strip() if movie_percent else ""
+    movie_language = movie_doc.xpath("//*[@id='media_v4']/div/div/div[2]/div/section/div[1]/div/section[1]/p[3]/text()")
+    dict_data["语言"] = movie_language[0].strip() if movie_language else ""
+    movie_director = movie_doc.xpath("//*[@id='original_header']/div[2]/section/div[3]/ol/li[1]/p[1]/a/text()")
+    dict_data["导演"] = ", ".join(movie_director) if movie_director else ""
+    movie_author = movie_doc.xpath("//*[@id='original_header']/div[2]/section/div[3]/ol/li[2]/p[1]/a/text()")
+    dict_data["作者"] = ", ".join(movie_author) if movie_author else ""
+    movie_actor = movie_doc.xpath("//*[@id='cast_scroller']/ol/li/p[1]/a/text()")
+    if "查看更多" in movie_actor:
+        movie_actor.remove("查看更多")
+    dict_data["主演"] = ", ".join(movie_actor) if movie_actor else ""
+    movie_slogan = movie_doc.xpath("//*[@id='original_header']/div[2]/section/div[3]/h3[1]/text()")
+    dict_data["Slogan"] = movie_slogan[0].strip() if movie_slogan else ""
+    movie_introduction = movie_doc.xpath("//*[@id='original_header']/div[2]/section/div[3]/div/p/text()")
+    dict_data["简介"] = movie_introduction[0].strip() if movie_introduction else ""
+
+    print(dict_data)
+
+    return dict_data
+
+
+def save_all_movies(all_movies):
+    with open("csv_data/movie_list2.csv", "w", encoding="utf-8", newline="") as f:
+        writer = csv.DictWriter(f, ["电影名", "年份", "上映时间", "类型", "时长", "评分", "语言", "导演", "作者", "主演",
+                                    "Slogan", "简介"])
+        writer.writeheader()
+        writer.writerows(all_movies)
+
+
+if __name__ == '__main__':
+    response = requests.get(URL_1, timeout=60)
+
+    doc = html.fromstring(response.text)
+    all_movie_urls = doc.xpath("//*[@id='page_1']//div[@class='w-full mt-2 px-3 pb-3']//a/@href")
+
+    for e in range(2, 6):
+        params = f"air_date.gte=&air_date.lte=&certification=&certification_country=CN&debug=&first_air_date.gte=&first_air_date.lte=&include_adult=false&include_softcore=false&latest_ceremony.gte=&latest_ceremony.lte=&page={e}&primary_release_date.gte=&primary_release_date.lte=&region=&release_date.gte=&release_date.lte=2026-09-21&show_me=everything&sort_by=vote_average.desc&vote_average.gte=0&vote_average.lte=10&vote_count.gte=300&watch_region=CN&with_genres=&with_keywords=&with_networks=&with_origin_country=&with_original_language=&with_watch_monetization_types=&with_watch_providers=&with_release_type=&with_runtime.gte=0&with_runtime.lte=400"
+        response = requests.post(URL_2, data=params, timeout=60)
+        doc = html.fromstring(response.text)
+        page_urls = doc.xpath(f"//*[@id='page_{e}']//div[@class='w-full mt-2 px-3 pb-3']//a/@href")
+        all_movie_urls.extend(page_urls)
+
+    all_movies = []
+    for url in all_movie_urls:
+        if url:
+            movie_info_url = BASE_URL + url
+            movie_info = get_movie_info(movie_info_url)
+            all_movies.append(movie_info)
+
+    save_all_movies(all_movies)
+```

@@ -209,7 +209,7 @@ pip install openai
 
 ### 6.3 Python 代码调用 DeepSeek
 
-```python
+```python title="01.DeepSeek调用调试.py"
 import os
 from openai import OpenAI
 
