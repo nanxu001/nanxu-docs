@@ -138,8 +138,14 @@ export default hopeTheme({
 
   // 在这里配置主题提供的插件
   plugins: {
-    // 注意: 仅用于测试! 你必须自行生成并在生产环境中使用自己的评论服务
-    comment: false,
+    // 评论插件
+    comment: {
+      provider: "Giscus",
+      repo: "nanxu001/nanxu-docs",
+      repoId: "R_kgDOQG0sRw",
+      category: "General",
+      categoryId: "DIC_kwDOQG0sR84C-ZmI"
+    },
 
     components: {
       components: ["Badge", "VPCard"],
