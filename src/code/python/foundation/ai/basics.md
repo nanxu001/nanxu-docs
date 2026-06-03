@@ -84,7 +84,7 @@ ollama list
 ollama rm 模型名
 ```
 
-::: warning 注意
+::: warning
 默认情况下，Ollama 会安装在 C 盘用户目录下（`C:\Users\用户名`）。如果想安装到其他目录，需要自定义安装。
 :::
 
