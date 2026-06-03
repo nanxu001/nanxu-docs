@@ -1,7 +1,7 @@
 ---
 title: Streamlit 界面开发
 icon: fas:desktop
-order: 2
+order: 4
 ---
 
 ## 1. Streamlit 简介
@@ -79,7 +79,7 @@ st.set_page_config(
 | `st.write()` | 段落文字 |
 | `st.code()` | 代码格式 |
 
-```python title = "02.streamlit入门.py"
+```python title="02.streamlit入门.py"
 # 大标题
 st.title("Streamlit 入门演示")
 st.header("Streamlit 一级标题")
@@ -97,7 +97,7 @@ st.write("这是一段文字内容")
 | `st.audio()` | 音频 |
 | `st.video()` | 视频 |
 
-```python title = "02.streamlit入门.py"
+```python title="02.streamlit入门.py"
 # 图片
 st.image("resources/cat.jpg")
 
@@ -115,7 +115,7 @@ st.video("resources/news.mp4")
 | `st.table()` | 表格 |
 | `st.dataframe()` | 数据框 |
 
-```python title = "02.streamlit入门.py"
+```python title="02.streamlit入门.py"
 # 表格
 students_data = {
     "姓名": ["王林", "李慕婉", "贝罗"],
@@ -136,7 +136,7 @@ st.table(students_data)
 | `st.selectbox()` | 下拉选择框 |
 | `st.checkbox()` | 复选框 |
 
-```python title = "02.streamlit入门.py"
+```python title="02.streamlit入门.py"
 # 输入框
 name = st.text_input("请输入姓名")
 st.write(f"您输入的姓名为：{name}")

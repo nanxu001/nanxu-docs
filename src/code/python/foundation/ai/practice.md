@@ -1,7 +1,7 @@
 ---
 title: 会话管理实战
 icon: fas:comments
-order: 3
+order: 5
 ---
 
 ## 1. 界面基本布局
@@ -11,7 +11,7 @@ AI 智能伴侣项目基于 Streamlit 构建，页面分为两个部分：
 - **侧边栏（左侧）**：伴侣信息定制、会话管理功能
 - **核心展示区域（右侧）**：消息展示、输入框
 
-```python title = "05.ai_partner_3.py"
+```python title="05.ai_partner_3.py"
 import streamlit as st
 
 st.set_page_config(
@@ -30,7 +30,7 @@ st.title("AI智能伴侣")
 
 最基础的版本，实现简单的消息收发功能：
 
-```python title = "03.ai_partner_1.py"
+```python title="03.ai_partner_1.py"
 import streamlit as st
 from openai import OpenAI
 
@@ -85,7 +85,7 @@ if prompt:
 
 将历史消息一并发送给大模型：
 
-```python title = "04.ai_partner_2.py"
+```python title="04.ai_partner_2.py"
 # 改进：发送所有历史消息
 response = client.chat.completions.create(
     model="deepseek-chat",
@@ -113,7 +113,7 @@ response = client.chat.completions.create(
 
 ### 4.2 流式输出实现
 
-```python title = "04.ai_partner_2.py"
+```python title="04.ai_partner_2.py"
 # 调用 AI 大模型（流式输出）
 response = client.chat.completions.create(
     model="deepseek-chat",
@@ -148,7 +148,7 @@ st.session_state.messages.append({"role": "assistant", "content": full_response}
 
 使用 `st.sidebar` 创建侧边栏，用于伴侣信息定制：
 
-```python title = "05.ai_partner_3.py"
+```python title="05.ai_partner_3.py"
 # 初始化会话状态
 if "nick_name" not in st.session_state:
     st.session_state.nick_name = "小甜甜"
@@ -170,9 +170,9 @@ with st.sidebar:
 
 将伴侣的名字和性格组装成系统提示词，让大模型按照指定的角色回复：
 
-```python title = "05.ai_partner_3.py"
+```python title="05.ai_partner_3.py"
 system_prompt = f"""
-    你叫 {st.session_state.nick_name}，现在是用户的真实伴侣，请完全代入伴侣角色。：
+    你叫 {st.session_state.nick_name}，现在是用户的真实伴侣，请完全代入伴侣角色。
     规则：
         1. 每次只回1条消息
         2. 禁止任何场景或状态描述性文字
@@ -201,7 +201,7 @@ Python 文件操作分为三步：打开、读写、关闭。
 
 **读取文件：**
 
-```python title = "06.文件操作入门.py"
+```python title="06.文件操作入门.py"
 # 打开文件
 f = open("./resources/望庐山瀑布.txt", "r", encoding="utf-8")
 
@@ -215,7 +215,7 @@ f.close()
 
 **写入文件：**
 
-```python title = "06.文件操作入门.py"
+```python title="06.文件操作入门.py"
 f = open("./resources/静夜思.txt", "w", encoding="utf-8")
 
 try:
@@ -228,7 +228,7 @@ finally:
 
 JSON 是常用的数据交换格式，Python 提供了 `json` 模块来处理 JSON 数据。
 
-```python title = "07.json模块入门.py"
+```python title="07.json模块入门.py"
 import json
 
 user = {"name": "南絮", "age": 22, "gender": "男", "hobbies": ["reading", "swimming"]}
@@ -256,7 +256,7 @@ with open("resources/user.json", "r", encoding="utf-8") as f:
 
 使用时间戳作为会话名称：
 
-```python title = "08.ai_partner_4.py"
+```python title="08.ai_partner_4.py"
 from datetime import datetime
 
 def generate_session_name():
@@ -267,7 +267,7 @@ def generate_session_name():
 
 将会话数据保存到 JSON 文件中：
 
-```python title = "08.ai_partner_4.py"
+```python title="08.ai_partner_4.py"
 import json
 import os.path
 
@@ -292,7 +292,7 @@ def save_session_info():
 
 从 `sessions` 目录中加载所有会话文件列表：
 
-```python title = "08.ai_partner_4.py"
+```python title="08.ai_partner_4.py"
 def load_sessions():
     """加载所有会话列表"""
     session_list = []
@@ -306,7 +306,7 @@ def load_sessions():
 
 从 JSON 文件中加载指定会话的数据：
 
-```python title = "08.ai_partner_4.py"
+```python title="08.ai_partner_4.py"
 def load_session(session_name: str):
     """加载指定会话"""
     try:
@@ -325,7 +325,7 @@ def load_session(session_name: str):
 
 删除指定的会话文件：
 
-```python title = "08.ai_partner_4.py"
+```python title="08.ai_partner_4.py"
 def del_session(session_name: str):
     """删除指定会话"""
     try:
@@ -342,7 +342,7 @@ def del_session(session_name: str):
 
 在侧边栏中展示会话管理功能：
 
-```python title = "08.ai_partner_4.py"
+```python title="08.ai_partner_4.py"
 with st.sidebar:
     st.header("AI控制面板")
 
@@ -393,7 +393,7 @@ with st.sidebar:
 
 ## 8. 完整代码
 
-```python title = "08.ai_partner_4.py"
+```python title="08.ai_partner_4.py"
 import json
 import os.path
 
@@ -520,7 +520,7 @@ with st.sidebar:
 
 # 系统提示词
 system_prompt = f"""
-    你叫 {st.session_state.nick_name}，现在是用户的真实伴侣，请完全代入伴侣角色。：
+    你叫 {st.session_state.nick_name}，现在是用户的真实伴侣，请完全代入伴侣角色。
     规则：
         1. 每次只回1条消息
         2. 禁止任何场景或状态描述性文字
