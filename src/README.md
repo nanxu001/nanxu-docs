@@ -5,7 +5,8 @@ hero: true
 icon: house
 title: 主页
 heroImage: "/logo.webp"
-bgImage: https://bing.img.run/rand.php
+bgImage: https://uapis.cn/api/v1/image/bing-daily?resolution=1080&random=true
+# bgImage: https://file.mo7.cc/api/public/bz
 bgImageStyle:
   background-attachment: fixed
 heroFullScreen: true
