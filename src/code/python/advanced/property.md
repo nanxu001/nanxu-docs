@@ -1,8 +1,7 @@
 ---
 title: Property 属性
 icon: fas:shield-halved
-dir:
-    order: 7
+order: 7
 ---
 
 ## 1.概述
