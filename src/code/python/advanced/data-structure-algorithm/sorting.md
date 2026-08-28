@@ -272,3 +272,79 @@ if __name__ == '__main__':
 ```
 [2, 3, 4, 5, 7]
 ```
+
+## 6.快速排序
+
+### 6.1 基本思想
+
+**快速排序**（Quick Sort）：通过一趟排序将数据**分割**成独立的两部分，其中一部分的所有数据都比另一部分小；再对这两部分**分别递归**进行快速排序，最终使整个数据有序。
+
+### 6.2 排序流程
+
+1. 设定一个**分界值**（基准），将数据分成左右两部分
+2. 把**小于**分界值的数据放到左边，**大于或等于**分界值的数据放到右边
+3. 左右两部分各自再取分界值，**递归**排序
+4. 重复以上过程，直到每个部分都排好序
+
+### 6.3 代码实现
+
+```python title = "05.快速排序.py"
+def quick_sort(my_list, start, end):
+    """
+    快速排序思路，实现对列表元素排序
+    :param my_list: 要操作的列表
+    :param start: 操作的数据起始索引
+    :param end: 操作的数据结束索引
+    :return: 无
+    """
+    # 核心细节：如果start >= end，说明已经排好序了，递归结束
+    if start >= end:
+        return
+
+    # 1.定义变量left和right，分别表示：分界值左，右的索引
+    left = start
+    right = end
+
+    # 2.定义变量mid，表示分界值，假设列表的起始值为分界值
+    mid = my_list[start]
+
+    # 3.具体的查找过程，只要left比right小，就一直找
+    while left < right:
+        # 4.把分界值右边比分界值小的数据，放分界值左边
+        # 4.1 循环操作，只要分界值右边的数据比分界值大，right就-1，直至循环结束
+        while my_list[right] >= mid and left < right:
+            right -= 1
+
+        # 4.2 走到这里，说明 my_list[right] 比分界值小，放左侧
+        my_list[left] = my_list[right]
+
+        # 5.把分界值左边比分界值大的数据，放分界值右边
+        # 5.1 循环操作，只要分界值左边的数据比分界值小，left就+1，直至循环结束
+        while my_list[left] < mid and left < right:
+            left += 1
+
+        # 5.2 走到这里，说明 my_list[left] 比分界值大（或等于），放右侧
+        my_list[right] = my_list[left]
+
+    # 6.走到这里循环结束，即分界值的位置已经找到，赋值即可
+    my_list[left] = mid
+
+    # 7.递归方式处理分界值左侧的数据
+    quick_sort(my_list, start, left - 1)
+
+    # 8.递归方式处理分界值右侧的数据
+    quick_sort(my_list, right + 1, end)
+
+
+if __name__ == '__main__':
+    my_list = [5, 8, 2, 1, 9, 6, 7, 4, 3]
+    quick_sort(my_list, 0, len(my_list) - 1)
+
+    print(my_list)
+```
+
+运行结果:
+
+```
+[1, 2, 3, 4, 5, 6, 7, 8, 9]
+```
