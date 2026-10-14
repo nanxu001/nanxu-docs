@@ -26,6 +26,13 @@ export default sidebar({
       prefix: "advanced/",
       link: "advanced/",
       children: "structure"
+    },
+    {
+      text: "LangChain",
+      icon: "fas:robot",
+      prefix: "langchain/",
+      link: "langchain/",
+      children: "structure"
     }
   ],
   "/code/": [
@@ -42,7 +49,7 @@ export default sidebar({
       icon: "fab:python",
       prefix: "python/",
       link: "python/",
-      children: ["foundation/", "advanced/"]
+      children: ["foundation/", "advanced/", "langchain/"]
     }
   ],
   "/": [
