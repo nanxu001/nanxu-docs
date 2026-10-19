@@ -351,4 +351,4 @@ public class BCryptPasswordGenerator {
 
 6. 点击"退出登录"按钮，验证跳转回登录界面，Redis 中的用户缓存被清除
 
-至此，完整的认证功能测试完成。建议在 `SysUserServiceImpl` 类中，从 `authenticationManager.authenticate()` 方法开始设置断点，结合 [Spring Security 登录流程](/code/java/authentication.html#_2-2-spring-security-登录流程) 进行调试。
+至此，完整的认证功能测试完成。建议在 `SysUserServiceImpl` 类中，从 `authenticationManager.authenticate()` 方法开始设置断点，结合 [Spring Security 登录流程](/code/java/authentication.md#_2-2-spring-security-登录流程) 进行调试。

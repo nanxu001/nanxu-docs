@@ -22,7 +22,7 @@ order: 10
 定义切面类拦截指定包路径下的控制器方法，统计接口执行性能。
 
 ::: warning
-使用AOP向数据库记录性能日志前，需要先完成[异步记录登录日志](/code/java/loginLog.html)的相关配置。
+使用AOP向数据库记录性能日志前，需要先完成[异步记录登录日志](/code/java/login-log.md)的相关配置。
 :::
 
 ```java title="PerformanceLogAspect.java"

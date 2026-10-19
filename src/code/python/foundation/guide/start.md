@@ -12,7 +12,7 @@ order: 2
 
 2. 在项目配置界面中，填写项目路径并进行如下设置：
     - 解释器选择项目 venv 环境
-    - Python 版本选择在 [安装Python环境](/code/python/foundation/guide/install.html) 步骤中所安装的 Python 目录
+    - Python 版本选择在 [安装Python环境](/code/python/foundation/guide/install.md) 步骤中所安装的 Python 目录
     - 如果下拉列表中未显示所需版本，请点击"文件夹"图标手动选择
 
 ![创建项目](/assets/image/code/python/foundation/guide/start/create-project.png)

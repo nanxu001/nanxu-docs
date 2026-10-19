@@ -58,3 +58,5 @@ LangChain 作为一个“工具”，不提供任何 LLMs，而是依赖于第�
 ```cmd
 (langchain1.2) PS D:\Codes\PycharmProjects\langchain1.2_tutorial> pip install -r .\requirements.txt
 ```
+
+后续部分章节会单独列出相关依赖，主要是为了了解该章节涉及的核心库，**无需重复安装**，这些依赖已经统一包含在 requirements.txt 中。

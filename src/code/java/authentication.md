@@ -125,7 +125,7 @@ Spring Security 登录流程涉及多个组件和步骤，对应的时序图较�
 
 Spring Security 的登录认证流程虽然涉及多个环节，但整体逻辑清晰，通过仔细阅读文档和时序图，并结合实际调试，可以很好地理解整个认证过程。文档下方已详细列出各个关键步骤和代码位置，便于开发者进行学习和调试。
 
-最后，作者本人也是初学者，整个流程是参考[网络文档](/code/java/authentication.html#_10-参考)并结合代码调试梳理而成，如有错误欢迎在git上评论或修改。
+最后，作者本人也是初学者，整个流程是参考[网络文档](#_11-参考)并结合代码调试梳理而成，如有错误欢迎在git上评论或修改。
 :::
 
 1. 由于登录接口在`SecurityConfig`中已配置为`anonymous()`访问权限，因此不会强制要求认证。同时登录请求不会携带 Token，所以在`JwtAuthenticationTokenFilter`中无法获取到用户信息，当前过滤器会直接放行进入下一个过滤器。
@@ -255,8 +255,8 @@ Spring Security 的登录认证流程虽然涉及多个环节，但整体逻辑�
    	}
    ```
 
-9. `this.preAuthenticationChecks.check(user)`内部会校验 [登录实体类](/code/java/authentication.html#_5-2-登录实体类) 中实现的`UserDetails`接口方法返回值，如检查账户是否被锁定、是否过期等状态。
-10. 抽象方法`additionalAuthenticationChecks()`会调用`DaoAuthenticationProvider`的具体实现。首先判断 [登录实体类](/code/java/authentication.html#_5-2-登录实体类) 中重写的`getPassword()`方法是否为空，然后调用`matches()`方法，按照 [Spring Security 配置](/code/java/authentication.html#_3-spring-security-配置) 中配置的密码加密方式进行密码匹配。
+9. `this.preAuthenticationChecks.check(user)`内部会校验 [登录实体类](/code/java/authentication.md#_5-2-登录实体类) 中实现的`UserDetails`接口方法返回值，如检查账户是否被锁定、是否过期等状态。
+10. 抽象方法`additionalAuthenticationChecks()`会调用`DaoAuthenticationProvider`的具体实现。首先判断 [登录实体类](/code/java/authentication.md#_5-2-登录实体类) 中重写的`getPassword()`方法是否为空，然后调用`matches()`方法，按照 [Spring Security 配置](/code/java/authentication.md#_3-spring-security-配置) 中配置的密码加密方式进行密码匹配。
 
     ```java title="DaoAuthenticationProvider.additionalAuthenticationChecks()"
     protected void additionalAuthenticationChecks(UserDetails userDetails,
@@ -654,8 +654,8 @@ public class SysUser implements Serializable {
 要使用 Spring Security 完成登录功能，需要一个实体类实现 UserDetails 接口，再将数据库中的实体存入此类。
 
 ::: important
-1. 默认情况下，FastJSON2 会通过`getter`方法来序列化对象属性，对于重写的字段需要添加`@JSONField(serialize = false)`注解以取消序列化这些不必要的属性。也可以在[Redis 序列化器](/code/java/redis.html#_2-2-redis-序列化配置)中配置`JSONWriter.Feature.FieldBased`特性，基于字段而非`getter`方法进行序列化，提高性能和一致性。
-2. 在使用 FastJSON 反序列化 Redis 中的对象时，由于 DevTools 使用了不同的类加载器（RestartClassLoader）加载应用类，而 FastJSON 使用默认类加载器，这可能导致反序列化后得到的是`JSONObject`而非期望的对象类型。在[Redis 序列化器](/code/java/redis.html#_2-2-redis-序列化配置)中已配置`JSONWriter.Feature.WriteClassName`特性，通过写入类名信息确保反序列化时能正确还原对象类型。此外，也可以从 Redis 中查询到数据后，先通过`toString()`方法转换为字符串，再使用`JSONObject.parseObject()`来避免反序列化失败的问题。
+1. 默认情况下，FastJSON2 会通过`getter`方法来序列化对象属性，对于重写的字段需要添加`@JSONField(serialize = false)`注解以取消序列化这些不必要的属性。也可以在[Redis 序列化器](/code/java/redis.md#_2-2-redis-序列化配置)中配置`JSONWriter.Feature.FieldBased`特性，基于字段而非`getter`方法进行序列化，提高性能和一致性。
+2. 在使用 FastJSON 反序列化 Redis 中的对象时，由于 DevTools 使用了不同的类加载器（RestartClassLoader）加载应用类，而 FastJSON 使用默认类加载器，这可能导致反序列化后得到的是`JSONObject`而非期望的对象类型。在[Redis 序列化器](/code/java/redis.md#_2-2-redis-序列化配置)中已配置`JSONWriter.Feature.WriteClassName`特性，通过写入类名信息确保反序列化时能正确还原对象类型。此外，也可以从 Redis 中查询到数据后，先通过`toString()`方法转换为字符串，再使用`JSONObject.parseObject()`来避免反序列化失败的问题。
 :::
 
 ```java title="LoginUser.java"
@@ -1064,7 +1064,7 @@ public class AuthenticationEntryPointImpl implements AuthenticationEntryPoint {
 
 完成上述认证授权功能的开发后，可通过前端页面进行功能验证。请将页面文件放置在 `/resources/statics` 目录下。
 
-前端页面代码及完整验证流程详见 [认证功能测试](/code/java/authentication-test.html)。
+前端页面代码及完整验证流程详见 [认证功能测试](/code/java/authentication-test.md)。
 
 ::: tip 关键验证步骤
 1. 访问 `http://localhost:8888/test-db.html`，使用生成的测试密码登录
@@ -1145,7 +1145,7 @@ public class LogoutSuccessHandlerImpl implements LogoutSuccessHandler {
 
 ### 10.4 测试
 
-前端测试页面的退出登录功能已包含在 [认证功能测试](/code/java/authentication-test.html) 中。
+前端测试页面的退出登录功能已包含在 [认证功能测试](/code/java/authentication-test.md) 中。
 
 ## 11.参考
 
