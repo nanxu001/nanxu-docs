@@ -378,21 +378,21 @@ print(model.invoke("请介绍一下你自己"))
 
 OpenRouter 是一个多模型 API 聚合平台，提供统一的 OpenAI 兼容接口，可以通过一个 API Key 调用 OpenAI、Claude、Gemini、DeepSeek、Qwen 等不同厂商的大模型。它适合用于模型对比、模型路由、Agent 应用开发和课程实验。
 
-##### 相关依赖：
+##### 相关依赖
 
 ```cmd
 # OpenRouter 模型集成
 pip install langchain-openrouter
 ```
 
-##### 环境变量：
+##### 环境变量
 
 ```.env title=".env"
 OPENROUTER_API_KEY=<YOUR_API_KEY>
 OPENROUTER_API_BASE=https://openrouter.ai/api/v1
 ```
 
-##### 举例：
+##### 举例
 
 LangChain 当前版本为 OpenRouter 提供了专用集成：`ChatOpenRouter`。
 
@@ -424,8 +424,6 @@ CloseAI 是一个面向国内用户的 AI API 中转平台，提供 OpenAI、Cla
 
 LangChain没有为CloseAI提供专用集成，可以通过ChatOpenAI兼容接口调用。
 
-##### 举例：
-
 ```python title="01.model-init-online.ipynb"
 from dotenv import load_dotenv
 from langchain_openai import ChatOpenAI
@@ -449,6 +447,8 @@ print(model.invoke("请介绍一下你自己"))
 ## 2.init_chat_model()
 
 `init_chat_model` 是 LangChain 1.x 中推出的用于初始化聊天模型的**统一接口**。只要是 LangChain 支持的模型都可以处理，它会根据模型名称自动选择对应的模型类初始化实例。
+
+![init_chat_model：按 provider 选择模型类，再统一 invoke](/assets/image/code/python/langchain/model/initialization/init-chat-model-flow.png)
 
 ### 2.1 基本语法
 
@@ -512,6 +512,8 @@ print(model.invoke("请介绍一下你自己"))
 
 但是，并非所有的模型都支持自动推断，如 model 名称 `qwen-plus` 不支持自动推断，没有指明供应商会报错。
 
+![同一个 DeepSeek 模型：四个平台、三种创建方式](/assets/image/code/python/langchain/model/initialization/deepseek-model-creation-paths.png)
+
 ### 2.5 模型初始化参数(常用版)
 
 Model Class（如 `ChatDeepSeek`）与 `init_chat_model()` 使用同一套初始化参数，下面逐一说明。
@@ -528,6 +530,8 @@ API文档：https://docs.langchain.org.cn/oss/python/langchain/models#parameters
 | max_tokens | int | 限制模型输出的最大 token 数量 | `None` |
 | timeout | float | 超时时间（秒），超时未响应，请求会被取消 | `None` |
 | max_retries | int | 请求失败（如网络问题、速率限制）时的最大重试次数 | 6 |
+
+![temperature 与 max_tokens 参数说明](/assets/image/code/python/langchain/model/initialization/temperature-max-tokens-diagram.png)
 
 ::: info 说明
 1. temperature 参数根据使用场景选择：
@@ -558,6 +562,8 @@ LangChain 也支持使用 Ollama、vLLM 等框架启动的本地大模型，这�
 Ollama 是在Github 上的一个开源项目，其项目定位是：**一个本地运行大模型的集成框架**，可以实现如 Qwen、Deepseek 等主流大模型的下载、启动和本地运行的自动化部署及推理流程。
 
 Ollama官方地址：https://ollama.com
+
+![Ollama 作为模型供应商，接入基于 LangChain 的应用平台](/assets/image/code/python/langchain/model/initialization/ai-app-platform-architecture.png)
 
 ### 3.2 Ollama 的安装与模型下载
 
