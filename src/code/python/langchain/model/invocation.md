@@ -197,7 +197,6 @@ AI的回复1：你好，小明！很高兴认识你😊 我是你的AI助手，�
 AI的回复2：你叫小明呀 😊 有什么想聊的或需要帮忙的吗？
 ```
 
-
 #### 1.2.3 消息对象列表
 
 使用内置的消息类（如 SystemMessage, HumanMessage, AIMessage），将消息对象列表输入模型。
@@ -669,12 +668,12 @@ print(f"批量调用节省: {((loop_time - batch_time) / loop_time * 100):.1f}%"
 运行结果：
 
 ```
-1. Spring is here.
+1. Spring has come.
 2. Summer is very hot.
 3. Autumn leaves falling
 4. It snows in winter.
-循环调用耗时: 4.04秒
-批量调用节省: 49.2%
+循环调用耗时: 4.28秒
+批量调用节省: 52.1%
 ```
 
 同样的 4 条输入，批量调用 2.05 秒、循环调用 4.04 秒，耗时差不多减半。差距来自**并发**：`batch()` 会把多个请求同时发出去，总耗时大致等于「最慢的那一个」；循环则是串行，总耗时是「所有请求之和」。
@@ -692,3 +691,275 @@ print(f"批量调用节省: {((loop_time - batch_time) / loop_time * 100):.1f}%"
 - 多个**相互独立**的输入 → 用 `batch()` 或 `batch_as_completed()`
 - 后一个请求依赖前一个的结果 → 只能用循环
 - 担心触发限流 → 用 `max_concurrency` 压低并发数
+
+## 4.异步调用
+
+### 4.1 同步 VS 异步
+
+**同步(sync)**：
+
+- 概念：发起一个任务之后，需要 `等待该任务完成后`，才能继续执行后续任务。
+- 表现：当前执行流 `会被『阻塞』`。
+
+**异步(async)**：
+
+- 概念：发起一个任务之后， `不必等该任务完成`，就可以继续执行其他任务。
+- 备注：虽然不必等待任务完成，但任务完成后，仍然可以通过特定方式获取结果。
+- 表现：当前执行流 `不会被『阻塞』`。
+
+举例：
+
+![同步与异步的类比：小明等小红一起走 vs 小明先走、小红随后追上](/assets/image/code/python/langchain/model/invocation/sync-vs-async-diagram.png)
+
+在LangChain框架中，异步方法（ainvoke、astream、abatch）与它们的同步版本（invoke、stream、batch）相比，具备如下特点：
+
+- `避免阻塞主线程`：同步调用会阻塞程序执行，而异步方法让应用程序在等待API响应时保持响应性。
+- `优化资源利用`：异步操作可以更高效地利用系统资源，减少空闲等待时间。
+
+### 4.2 ainvoke()
+
+```python title="06.ainvoke的使用.py"
+import asyncio
+import time
+
+from langchain.chat_models import init_chat_model
+from dotenv import load_dotenv
+
+import os
+
+load_dotenv(override=True)
+
+DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY")
+DEEPSEEK_BASE_URL = os.getenv("DEEPSEEK_BASE_URL")
+
+model = init_chat_model(
+    model="deepseek:deepseek-flash",
+    api_key=DEEPSEEK_API_KEY,
+    base_url=DEEPSEEK_BASE_URL
+)
+
+async def demo_async_invoke():
+    print("=== 演示：ainvoke 的异步（非阻塞）效果 ===")
+    start_time = time.perf_counter()  # 记录开始时间
+
+    print("程序开始...")
+
+    # 1. 创建任务 (Task)
+    print(">>> 发起异步模型调用 (ainvoke)...")
+    async_task = asyncio.create_task(model.ainvoke("用一句话解释人工智能。"))
+
+    # 2. 并行执行其他任务
+    print(">>> 模型请求已在后台发送，继续执行本地逻辑...")
+    for i in range(3):
+        await asyncio.sleep(1)  # 使用异步等待，释放控制权
+        print(f">>> 正在执行第{i + 1}个任务... (已耗时 {time.perf_counter() -
+                                                        start_time:.2f}s)")
+
+    # 3. 获取模型结果
+    print(">>> 本地任务完成，检查模型状态...")
+    response = await async_task
+
+    end_time = time.perf_counter()
+    print(f">>> 模型返回: {response.content}")
+    print(f"=== 总运行耗时: {end_time - start_time:.2f}s ===")
+
+async def main():
+    """主函数"""
+    await demo_async_invoke()
+
+if __name__ == "__main__":
+    asyncio.run(main())
+```
+
+运行结果：
+
+```
+=== 演示：ainvoke 的异步（非阻塞）效果 ===
+程序开始...
+>>> 发起异步模型调用 (ainvoke)...
+>>> 模型请求已在后台发送，继续执行本地逻辑...
+>>> 正在执行第1个任务... (已耗时 1.00s)
+>>> 正在执行第2个任务... (已耗时 2.01s)
+>>> 正在执行第3个任务... (已耗时 3.02s)
+>>> 本地任务完成，检查模型状态...
+>>> 模型返回: 人工智能是让机器模拟人类感知、学习、推理和决策等智能行为的技术。
+=== 总运行耗时: 3.02s ===
+```
+
+### 4.3 astream()
+
+```python title="07.astream的使用.py"
+import asyncio
+import time
+
+from langchain.chat_models import init_chat_model
+from dotenv import load_dotenv
+
+import os
+
+load_dotenv(override=True)
+
+DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY")
+DEEPSEEK_BASE_URL = os.getenv("DEEPSEEK_BASE_URL")
+
+model = init_chat_model(
+    model="deepseek:deepseek-flash",
+    api_key=DEEPSEEK_API_KEY,
+    base_url=DEEPSEEK_BASE_URL
+)
+
+async def demo_async_stream():
+    """演示异步调用的非阻塞特性"""
+    print("=== 演示：astream 的异步（非阻塞）效果 ===")
+    start_time = time.perf_counter()  # 记录开始时间
+    print("程序开始...")
+
+    # 1. 发起异步流式请求
+    # 注意：此时请求已发出，返回的是一个异步生成器
+    print(">>> 发起异步流式调用 (astream)...")
+    stream_resp = model.astream("请用一句话解释机器学习的基本概念。")
+
+    # 2. 在等待流式响应的同时，执行其他任务
+    print(">>> 流式请求已发送，程序无需等待，继续执行其他异步任务...")
+    for i in range(3):
+        # 使用 asyncio.sleep 而非 time.sleep
+        # 这允许事件循环在等待时去处理上面的 stream_resp 网络 IO
+        await asyncio.sleep(1)
+        # print(f">>> 正在执行并发任务 {i + 1}... ")
+        print(f">>> 正在执行第{i + 1}个任务... (已耗时 {time.perf_counter() -
+                                                        start_time:.2f}s)")
+
+    # 3. 现在开始处理流式结果
+    print(">>> 模拟任务已完成，开始读取缓冲区中的流式结果...")
+    end_time = time.perf_counter()
+    print(">>> 流式输出: ", end="", flush=True)
+    async for chunk in stream_resp:
+        # LangChain 的消息块通常通过 .content 获取内容
+        content = chunk.content if hasattr(chunk, 'content') else str(chunk)
+        print(content, end="", flush=True)
+
+    print("\n>>> 流式输出结束\n")
+    print(f"=== 总运行耗时: {end_time - start_time:.2f}s ===")
+
+async def main():
+    """主函数"""
+    await demo_async_stream()
+
+if __name__ == "__main__":
+    asyncio.run(main())
+```
+
+运行结果：
+
+```
+=== 演示：astream 的异步（非阻塞）效果 ===
+程序开始...
+>>> 发起异步流式调用 (astream)...
+>>> 流式请求已发送，程序无需等待，继续执行其他异步任务...
+>>> 正在执行第1个任务... (已耗时 1.00s)
+>>> 正在执行第2个任务... (已耗时 2.01s)
+>>> 正在执行第3个任务... (已耗时 3.02s)
+>>> 模拟任务已完成，开始读取缓冲区中的流式结果...
+>>> 流式输出: 机器学习是让计算机从数据中自动学习规律，并据此进行预测或决策的方法。
+>>> 流式输出结束
+
+=== 总运行耗时: 3.02s ===
+```
+
+### 4.4 abatch()
+
+```python title="08.abatch的使用.py"
+import asyncio
+import time
+
+from langchain.chat_models import init_chat_model
+from dotenv import load_dotenv
+
+import os
+
+load_dotenv(override=True)
+
+DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY")
+DEEPSEEK_BASE_URL = os.getenv("DEEPSEEK_BASE_URL")
+
+model = init_chat_model(
+    model="deepseek:deepseek-flash",
+    api_key=DEEPSEEK_API_KEY,
+    base_url=DEEPSEEK_BASE_URL
+)
+
+async def demo_async_batch():
+    """演示异步批量的非阻塞特性"""
+    print("=== 演示：abatch 的异步（非阻塞）效果 ===")
+    start_time = time.perf_counter()  # 记录开始时间
+
+    print("程序开始...")
+
+    # 准备批量输入
+    questions = ["用一句话说明深度学习与传统机器学习的区别", "中国首都在哪里？"]
+
+    # 1. 发起异步批量请求
+    # 关键修改：使用 create_task 让协程立即在后台执行
+    print(">>> 发起异步批量调用 (abatch)...")
+    batch_task = asyncio.create_task(model.abatch(questions))
+
+    # 2. 在等待批量处理的同时，执行其他任务
+    print(">>> 批量任务已在后台运行，主程序继续执行...")
+    for i in range(3):
+        # 关键修改：使用 asyncio.sleep 允许后台任务获取 CPU 时间片进行网络请求
+        await asyncio.sleep(1)
+        print(f">>> 正在执行第{i + 1}个任务... (已耗时 {time.perf_counter() -
+                                                        start_time:.2f}s)")
+
+    # 3. 等待批量处理结果
+    print(">>> 其他任务已完成，现在获取后台批量任务的结果...")
+    # 此时 batch_task 可能已经完成，或者我们在这里等待它完成
+    responses = await batch_task
+
+    end_time = time.perf_counter()
+
+    for response in responses:
+        content = response.content if hasattr(response, 'content') else str(response)
+        print(f">>> 响应内容: {content}")
+
+    print(f"=== 总运行耗时: {end_time - start_time:.2f}s ===")
+
+async def main():
+    """主函数"""
+    await demo_async_batch()
+
+if __name__ == "__main__":
+    asyncio.run(main())
+```
+
+运行结果：
+
+```
+=== 演示：abatch 的异步（非阻塞）效果 ===
+程序开始...
+>>> 发起异步批量调用 (abatch)...
+>>> 批量任务已在后台运行，主程序继续执行...
+>>> 正在执行第1个任务... (已耗时 1.01s)
+>>> 正在执行第2个任务... (已耗时 2.03s)
+>>> 正在执行第3个任务... (已耗时 3.04s)
+>>> 其他任务已完成，现在获取后台批量任务的结果...
+>>> 响应内容: 传统机器学习通常依赖人工设计特征，而深度学习能直接从原始数据中自动学习层次化的特征表示。
+>>> 响应内容: 中国首都是北京。
+=== 总运行耗时: 3.04s ===
+```
+
+## 5.如何处理模型调用失败
+
+使用 try-except 块捕获异常：
+
+```python
+try:
+    response = model.invoke("Hello")
+    print(response.content)
+except ValueError as e:
+    print(f"配置错误: {e}")
+except ConnectionError as e:
+    print(f"网络错误: {e}")
+except Exception as e:
+    print(f"未知错误: {e}")
+```
