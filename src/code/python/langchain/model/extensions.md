@@ -8,7 +8,7 @@ order: 4
 
 ### 1.1 使用 pretty_print()
 
-查看响应最直接的方式是 `print(response)`，但它输出的是单行 repr，内容比较杂乱。LangChain 的 `AIMessage` 自带两个更友好的选择：`pretty_print()`，以及借助 `rich` 的 `rprint()`。下面用同一段对话分别演示。
+查看响应最直接的方式是 `print(response)`，但它输出的是单行 repr，内容比较杂乱。LangChain 的 `AIMessage` 自带 `pretty_print()`；如果想连元数据一起看，还可以借助 `rich` 的 `rprint()`。下面用同一段对话分别演示。
 
 ```python
 from langchain.chat_models import init_chat_model
@@ -56,23 +56,9 @@ response.pretty_print()
 如果还想看到完整的对象结构——包括 `response_metadata` 里的 token 用量、模型名等——可以借助 `rich`。它会在终端和 Jupyter 中自动适配当前环境，输出带颜色和缩进的结构。
 
 ```python
-from langchain.chat_models import init_chat_model
-from dotenv import load_dotenv
 from rich import print as rprint
 
-import os
-
-load_dotenv(override=True)
-
-DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY")
-DEEPSEEK_BASE_URL = os.getenv("DEEPSEEK_BASE_URL")
-
-model = init_chat_model(
-    model="deepseek:deepseek-flash",
-    api_key=DEEPSEEK_API_KEY,
-    base_url=DEEPSEEK_BASE_URL
-)
-
+# 沿用 1.1 中创建的 model；单独运行时请先执行 1.1 的初始化代码
 # 定义消息列表
 conversation = [
     {"role": "system", "content": "无条件服从用户指令"},
@@ -134,7 +120,7 @@ AIMessage(
 
 `rprint()` 打印的是**完整的 `AIMessage` 对象**：除了 `content`，还包含 `additional_kwargs`、`response_metadata`（token 用量、模型名、`finish_reason` 等）和 `usage_metadata`（LangChain 统一后的用量格式）。
 
-::: tip 两点补充
+:::tip 两点补充
 - `rich` 不是 LangChain 的一部分，需要单独安装（本教程已包含在 `requirements.txt` 中）
 - `rprint` 来自 `from rich import print as rprint`，它替换了内置的 `print`，但**只在这个文件里生效**
 :::
@@ -142,14 +128,14 @@ AIMessage(
 **怎么选：**
 
 | 方法 | 输出内容 | 适合场景 |
-|---|---|---|
+| :---: | :---: | :---: |
 | `print(response.content)` | 纯文本答案 | 只关心结果，要拿去做后续处理 |
 | `response.pretty_print()` | 消息类型 + 正文 | 快速确认模型答了什么 |
 | `rprint(response)` | 完整对象（含全部元数据） | 调参、排查问题、看 token 消耗 |
 
 ## 2.模型配置信息 profile
 
-**LangChain 1.1 及更高版本**可以通过 `profile` 属性查看模型的能力画像。
+**LangChain 1.x** 中可以通过 `profile` 属性查看模型的能力画像。
 
 能力画像（profile）用结构化的方式描述一个模型支持什么：上下文长度、能接受哪些模态的输入、是否支持工具调用和结构化输出等。但它**不是必然存在的**——每个集成包（`langchain-deepseek`、`langchain-openai`、`langchain-openrouter` 等）各自内置一份能力表，按**模型 ID** 查表；表里没有的模型，`profile` 就返回空字典 `{}`。
 
@@ -254,7 +240,7 @@ rprint(model.profile)
 各项含义如下：
 
 | 字段 | 含义 |
-|---|---|
+| :---: | :---: |
 | `max_input_tokens` / `max_output_tokens` | 上下文窗口上限 / 单次输出上限 |
 | `*_inputs` | 支持哪些模态作为输入（文本、图像、音频、视频） |
 | `*_outputs` | 支持哪些模态作为输出 |
@@ -315,13 +301,11 @@ rprint(model.profile)
 
 ## 3.模型初始化参数（完整版）
 
-### 3.1 查看所有初始化参数
-
 官方文档和源码注释没有给出完整的参数列表。
 
-以 ChatDeepSeek 类为例，其参数可以由 `自身定义` 或 `从父类BaseChatModel继承`。直接查看源码也很难拼凑完整列表。这里通过查看ChatDeepSeek的类属性 model_fields 来获得完整参数列表。
+以 ChatDeepSeek 类为例，其参数可以由**自身定义**，或从父类 `BaseChatModel` 继承。直接查看源码也很难拼凑完整列表。这里通过查看 `ChatDeepSeek` 的类属性 `model_fields` 来获得完整参数列表。
 
-### 3.2 查看 ChatDeepSeek 支持的完整参数列表
+### 3.1 查看 ChatDeepSeek 支持的完整参数列表
 
 ```python title="09.profile-initparams-config.ipynb"
 from langchain_deepseek import ChatDeepSeek
@@ -332,59 +316,76 @@ print(ChatDeepSeek.model_fields.keys())
 运行结果：
 
 ```
-dict_keys(['name', 'cache', 'verbose', 'callbacks', 'tags', 'metadata', 'custom_get_token_ids', 'rate_limiter', 'disable_streaming', 'output_version', 'profile', 'client', 'async_client', 'root_client', 'root_async_client', 'model_name', 'temperature', 'model_kwargs', 'openai_api_key', 'openai_api_base', 'openai_organization', 'openai_proxy', 'request_timeout', 'stream_usage', 'max_retries', 'presence_penalty', 'frequency_penalty', 'seed', 'logprobs', 'top_logprobs', 'logit_bias', 'streaming', 'n', 'top_p', 'max_tokens', 'reasoning_effort', 'reasoning', 'verbosity', 'tiktoken_model_name', 'default_headers', 'default_query', 'http_client', 'http_async_client', 'stop', 'extra_body', 'include_response_headers', 'disabled_params', 'context_management', 'include', 'service_tier', 'store', 'truncation', 'use_previous_response_id', 'use_responses_api', 'api_key', 'api_base'])
+dict_keys([
+          'name', 'cache', 'verbose', 'callbacks', 'tags', 'metadata',
+          'custom_get_token_ids', 'rate_limiter', 'disable_streaming',
+          'output_version', 'profile', 'client', 'async_client',
+          'root_client', 'root_async_client', 'model_name',
+          'temperature', 'model_kwargs', 'openai_api_key',
+          'openai_api_base', 'openai_organization', 'openai_proxy',
+          'request_timeout', 'stream_usage', 'max_retries',
+          'presence_penalty', 'frequency_penalty', 'seed', 'logprobs',
+          'top_logprobs', 'logit_bias', 'streaming', 'n', 'top_p',
+          'max_tokens', 'reasoning_effort', 'reasoning', 'verbosity',
+          'tiktoken_model_name', 'default_headers', 'default_query',
+          'http_client', 'http_async_client', 'stop', 'extra_body',
+          'include_response_headers', 'disabled_params',
+          'context_management', 'include', 'service_tier', 'store',
+          'truncation', 'use_previous_response_id',
+          'use_responses_api', 'api_key', 'api_base'])
 ```
-### 3.3 模型类的参数构成
 
-以 ChatDeepSeek 为例，完整参数列表由如下几部分构成：
+### 3.2 模型类的参数构成
 
-#### 3.3.1 客户端与连接参数(Networking)
+以 `ChatDeepSeek` 为例，完整参数列表由如下几部分构成：
+
+#### 3.2.1 客户端与连接参数（Networking）
 
 这类参数决定了代码“怎么连到服务端”，而不是“让模型怎么生成”。
 
 | 参数名 | 说明 |
 | :---: | :---: |
-| api_key / openai_api_key | 鉴权密钥，DeepSeek 通常兼容 OpenAI 接口格式 |
-| api_base /openai_api_base | 接口地址（如：https://api.deepseek.com ） |
-| request_timeout | 网络请求超时时间 |
-| max_retries | 请求失败时的重试次数 |
-| http_client / http_async_client | 手动传入 httpx.Client  实例（用于更复杂的网络配置） |
-| openai_proxy | 代理服务器配置 |
-| default_headers / default_query | 每次请求时默认携带的 HTTP Header 或 Query 参数 |
+| `api_key` / `openai_api_key` | 鉴权密钥，DeepSeek 通常兼容 OpenAI 接口格式 |
+| `api_base` / `openai_api_base` | 接口地址（如：https://api.deepseek.com） |
+| `request_timeout` | 网络请求超时时间 |
+| `max_retries` | 请求失败时的重试次数 |
+| `http_client` / `http_async_client` | 手动传入 `httpx.Client` 实例（用于更复杂的网络配置） |
+| `openai_proxy` | 代理服务器配置 |
+| `default_headers` / `default_query` | 每次请求时默认携带的 HTTP Header 或 Query 参数 |
 
-#### 3.3.2 模型推理参数(Model Inference)
+#### 3.2.2 模型推理参数（Model Inference）
 
 这些是直接传递给 DeepSeek 模型 API 的参数，决定了 `生成内容` 的质量和风格。
 
 | 参数名 | 说明 |
 | :---: | :---: |
-| model_name | 指定具体的模型（如 deepseek-chat 或 deepseek-reasoning） |
-| temperature | 采样温度，越高越随机 |
-| top_p | 核采样参数 |
-| max_tokens | 最大输出 token 数 |
-| stop | 停止符列表 |
-| streaming | 是否开启流式传输 |
-| n | 生成几个候选回复 |
-| reasoning | 是否启用推理模式 |
-| reasoning_effort | (DeepSeek R1 特色)控制思考链（COT）的深度 |
-| presence_penalty / frequency_penalty | 惩罚项(存在惩罚、频率惩罚)，用于减少内容重复 |
-| store | 是否存储对话 |
-| logit_bias | 调整特定词汇出现的概率 |
+| `model_name` | 指定具体的模型（如 `deepseek-chat` 或 `deepseek-reasoner`） |
+| `temperature` | 采样温度，越高越随机 |
+| `top_p` | 核采样参数 |
+| `max_tokens` | 最大输出 token 数 |
+| `stop` | 停止符列表 |
+| `streaming` | 是否开启流式传输 |
+| `n` | 生成几个候选回复 |
+| `reasoning` | 是否启用推理模式 |
+| `reasoning_effort` | （DeepSeek R1 特色）控制思考链（COT）的深度 |
+| `presence_penalty` / `frequency_penalty` | 惩罚项（存在惩罚、频率惩罚），用于减少内容重复 |
+| `store` | 是否存储对话 |
+| `logit_bias` | 调整特定词汇出现的概率 |
 
-#### 3.3.3 LangChain 框架通用参数
+#### 3.2.3 LangChain 框架通用参数
 
 由 LangChain 的 `BaseChatModel` 定义，所有其子类 ChatXxx 都具备的，用于管理 LangChain 内部的逻辑（如日志、回调、元数据），仅在内部生效。
 
 | 参数名 | 说明 |
 | :---: | :---: |
-| name | 给模型实例起个名字，用于在 Trace（如 LangSmith）中区分 |
-| verbose | 是否打印详细日志 |
-| callbacks | 回调处理器，用于集成 LangSmith 或自定义监控 |
-| tags / metadata | 用于标记该实例的标签和元数据 |
-| cache | 是否缓存该模型的请求结果 |
-| rate_limiter | LangChain 内部的频率限制器 |
+| `name` | 给模型实例起个名字，用于在 Trace（如 LangSmith）中区分 |
+| `verbose` | 是否打印详细日志 |
+| `callbacks` | 回调处理器，用于集成 LangSmith 或自定义监控 |
+| `tags` / `metadata` | 用于标记该实例的标签和元数据 |
+| `cache` | 是否缓存该模型的请求结果 |
+| `rate_limiter` | LangChain 内部的频率限制器 |
 
-#### 3.3.4 高级与特定扩展参数
+#### 3.2.4 高级与特定扩展参数
 
 这类参数通常用于特定场景，或为了保持与 OpenAI 协议的兼容性而存在。
 
@@ -396,13 +397,13 @@ dict_keys(['name', 'cache', 'verbose', 'callbacks', 'tags', 'metadata', 'custom_
 
 - **功能开关**：`disable_streaming`, `include_response_headers`（决定是否在输出中包含 Header）。
 
-- **兼容性参数**：`openai_organization`, `service_tier`, `store`（这些多为 OpenAI 遗留参数，DeepSeek 实际使用较少）。
+- **兼容性参数**：`openai_organization`, `service_tier`（这些多为 OpenAI 遗留参数，DeepSeek 实际使用较少；`store` 见 3.2.2）。
 
-##### 3.3.4.1 model_kwargs
+##### 3.2.4.1 model_kwargs
 
 `model_kwargs` 用于**存放那些 OpenAI Compatible API 支持、但 LangChain 没有直接列出的字段**。
 
-上面三组参数（3.3.1～3.3.3）来自 LangChain 对 `ChatDeepSeek` 的声明，其中**不包含 `tools`**——它属于 OpenAI Compatible API 的请求字段，不在初始化参数之列。要传这类字段，就写进 `model_kwargs`。
+上面三组参数（3.2.1～3.2.3）来自 LangChain 对 `ChatDeepSeek` 的声明，其中**不包含 `tools`**——它属于 OpenAI Compatible API 的请求字段，不在初始化参数之列。要传这类字段，就写进 `model_kwargs`。
 
 完整的请求字段可以查阅 [OpenAI Chat Completions 文档](https://developers.openai.com/api/reference/resources/chat/subresources/completions/methods/create)。
 
@@ -453,8 +454,7 @@ AIMessage(
     content='我来帮您查询一下北京今天的天气。',
     additional_kwargs={
         'refusal': None,
-        'reasoning_content': 'The user asks about Beijing weather today. I should call get_weather with location 
-"北京" or "Beijing, China".'
+        'reasoning_content': 'The user asks about Beijing weather today. I should call get_weather with location "北京" or "Beijing, China".'
     },
     response_metadata={
         'token_usage': {
@@ -504,11 +504,11 @@ AIMessage(
 `content` 里那句「我来帮您查询一下……」只是模型的过渡语，真正的动作在 `tool_calls` 里。完整的工具调用流程（绑定工具 → 执行 → 回传结果）会在后续章节展开。
 :::
 
-##### 3.3.4.2 extra_body
+##### 3.2.4.2 extra_body
 
-这里用于**存放模型厂商基于OpenAI API协议扩展的字段**。
+这里用于**存放模型厂商基于 OpenAI API 协议扩展的字段**。
 
-查阅 [OpenAI Chat Completions文档](https://developers.openai.com/api/reference/resources/chat/subresources/completions/methods/create)和 [DeepSeek对话补全API文档](https://api-docs.deepseek.com/zh-cn/api/create-chat-completion)可知，`thinking` 是 DeepSeek 扩展的字段，用于控制是否启用思考模式。
+查阅 [OpenAI Chat Completions 文档](https://developers.openai.com/api/reference/resources/chat/subresources/completions/methods/create) 和 [DeepSeek 对话补全 API 文档](https://api-docs.deepseek.com/zh-cn/api/create-chat-completion)可知，`thinking` 是 DeepSeek 扩展的字段，用于控制是否启用思考模式。
 
 ```python title="09.profile-initparams-config.ipynb"
 from langchain.chat_models import init_chat_model
@@ -530,15 +530,12 @@ rprint(response)
 
 运行结果：
 
-```python
+```
 AIMessage(
     content='你好，请告诉我你想让我用一句话回答的问题。',
     additional_kwargs={
         'refusal': None,
-        'reasoning_content': 
-'我们需要回答用户“你好，一句话回答”。需要理解：用户说“你好，一句话回答”可能是在要求用一句话回答。但没给具体问题。需
-要友好回应，询问要回答什么，保持一句话。中文。应一句话。比如“你好！请告诉我你想让我用一句话回答的问题。” 
-这是一句话吗？用了感叹号和句号，两个句子？可以说“你好，请告诉我你想让我用一句话回答的问题。” 一句话。'
+        'reasoning_content': '我们需要回答用户“你好，一句话回答”。需要理解：用户说“你好，一句话回答”可能是在要求用一句话回答。但没给具体问题。需要友好回应，询问要回答什么，保持一句话。中文。应一句话。比如“你好！请告诉我你想让我用一句话回答的问题。”这是一句话吗？用了感叹号和句号，两个句子？可以说“你好，请告诉我你想让我用一句话回答的问题。” 一句话。'
     },
     response_metadata={
         'token_usage': {
@@ -595,7 +592,7 @@ def invoke(
 ### 4.1 支持的配置项
 
 | 配置项 | 类型 | 描述 |
-| :---: | :---: | :--- |
+| :---: | :---: | :---: |
 | `run_name` | `str` | 为本次运行设置一个可读名称，便于在 LangSmith 中定位和识别 |
 | `tags` | `List[str]` | 为运行打标签，便于分类和过滤 |
 | `callbacks` | `List[BaseCallbackHandler]` | 设置回调处理器，在开始、流式输出、结束等阶段触发，可与 LangSmith 等平台集成 |
@@ -711,3 +708,5 @@ responses = model.batch(
 ```
 
 `batch()` 会从第一份 config 中读取 `max_concurrency`，用它限制同时在跑的请求数量。数值调小更稳，调大更快，具体取多少要看所用模型的限流阈值。
+
+以上是本章的拓展内容。至此，模型的**创建**与**调用**两条主线都齐了，剩下的就是在真实项目里把它们组合起来。

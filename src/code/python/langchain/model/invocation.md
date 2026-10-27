@@ -4,19 +4,19 @@ icon: fas:paper-plane
 order: 3
 ---
 
-在 LangChain 中，模型调用（Invocation）是指通过特定方法触发大语言模型生成输出的过程。根据不同的应用场景和需求，LangChain 提供了几种核心的调用方式，主要是 `invoke()`、 `stream()`和 `batch()` 方法，以及它们的异步版本 `ainvoke()`、 `astream()`和 `abatch()`，下面将系统地介绍这些方法。
+在 LangChain 中，模型调用（Invocation）是指通过特定方法触发大语言模型生成输出的过程。根据不同的应用场景和需求，LangChain 提供了几种核心的调用方式，主要是 `invoke()`、`stream()` 和 `batch()`，以及它们的异步版本 `ainvoke()`、`astream()` 和 `abatch()`，下面将系统地介绍这些方法。
 
-- `invoke()`：阻塞式，**一次性返回完整结果**问答、批处理任务、无需实时反馈的场景。
+- `invoke()`：阻塞式，**一次性返回完整结果**。适用：问答、批处理任务、无需实时反馈的场景。
 
-- `ainvoke()`：非阻塞式，提高系统吞吐量高并发Web应用、IO密集型任务。
+- `ainvoke()`：`invoke()` 的异步版（非阻塞）。适用：高并发 Web 应用、IO 密集型任务。
 
-- `stream()`：流式输出，**实时返回每个token**聊天机器人、长文本生成、需要提升用户体验的交互应用。
+- `stream()`：流式输出，**实时返回每个 token**。适用：聊天机器人、长文本生成、需要提升体验的交互应用。
 
-- `asteam()`：非阻塞式，提高系统吞吐量高并发Web应用、IO密集型任务。
+- `astream()`：`stream()` 的异步版（非阻塞）。适用：高并发 Web 应用、IO 密集型任务。
 
-- `batch()`：**批量处理多个输入**高并发场景，需要同时处理大量请求。
+- `batch()`：**批量处理多个输入**。适用：高并发场景、需要同时处理大量请求。
 
-- `abatch()`：非阻塞式，提高系统吞吐量高并发Web应用、IO密集型任务。
+- `abatch()`：`batch()` 的异步版（非阻塞）。适用：高并发 Web 应用、IO 密集型任务。
 
 ## 1.invoke()
 
@@ -47,7 +47,11 @@ response = model.invoke(input, config=None)
 
 invoke 方法非常灵活，支持三种形式的输入： `文本输入`、 `字典列表`、 `消息对象列表`。
 
-#### 1.2.1文本输入(最简单)
+:::tip 阅读说明
+下面各节的代码块都基于本节创建的 `model` 对象（以及已 `load_dotenv` 的环境变量）；如果你是新开文件或新 Notebook，请先完整执行 1.2.1 中的初始化代码。
+:::
+
+#### 1.2.1 文本输入（最简单）
 
 简单的一次性问答，直接传入一个问题或指令。
 
@@ -79,7 +83,7 @@ print(response)
 
 在 invoke 中直接输入文本，即可自动转化为 user message 并进行对话。
 
-#### 1.2.2 字典列表(推荐，最灵活)
+#### 1.2.2 字典列表（推荐，最灵活）
 
 创建字典列表组成消息。一条消息通常包含 `role（角色）` 、 `content（内容）` 等信息。
 
@@ -107,10 +111,10 @@ messages = [
 | `assistant` | AI/Assistant | AI 的历史回复（用于对话上下文） | "装饰器是一种设计模式..." |
 
 ::: tip
-"user" 和 "human" 有时可以互换，但遵循你选择的主要模型提供商（如OpenAI）的惯例使用 "user" 是最稳妥的做法。
+`user` 和 `human` 有时可以互换，但按所选模型提供商（如 OpenAI）的惯例使用 `user` 最稳妥。
 :::
 
-举例1：
+##### 举例 1：单轮问答
 
 ```python title="04.model-invoke.ipynb"
 messages = [
@@ -122,7 +126,7 @@ response = model.invoke(messages)
 print(response)
 ```
 
-举例2：多轮对话（带历史）
+##### 举例 2：多轮对话（带历史）
 
 ```python title="04.model-invoke.ipynb"
 messages = [
@@ -141,7 +145,7 @@ print(response)
 你刚才问的是：**“1 + 2 = ?”**
 ```
 
-举例3：如果不传递历史，AI 会"失忆"
+##### 举例 3：不传历史会失忆
 
 ```python title="04.model-invoke.ipynb"
 messages1 = [
@@ -169,7 +173,7 @@ AI的回复1：你好小明！很高兴认识你。有什么我可以帮你的�
 AI的回复2：我不知道你的名字。你还没有告诉我，也无法从当前对话中获取你的个人信息。你可以直接告诉我你叫什么名字。
 ```
 
-作为对比，传递记忆：
+##### 举例 4：传递历史（带记忆）
 
 ```python title="04.model-invoke.ipynb"
 conversation = [
@@ -209,11 +213,11 @@ AI的回复2：你叫小明呀 😊 有什么想聊的或需要帮忙的吗？
 
 | 消息类 | 对应字典格式 | 作用 |
 | :---: | :---: | :---: |
-| SystemMessage | {"role": "system", ...} | 系统提示 |
-| HumanMessage | {"role": "user", ...} | 用户输入 |
-| AIMessage | {"role": "assistant", ...} | AI 回复 |
+| SystemMessage | `{"role": "system", ...}` | 系统提示 |
+| HumanMessage | `{"role": "user", ...}` | 用户输入 |
+| AIMessage | `{"role": "assistant", ...}` | AI 回复 |
 
-举例1：
+##### 用消息对象构造对话
 
 ```python title="04.model-invoke.ipynb"
 from langchain_core.messages import SystemMessage, HumanMessage
@@ -229,7 +233,7 @@ print(response)
 
 ### 1.3 返回值详解
 
-invoke 返回一个 `AIMessage对象`，源码如下：
+invoke 返回一个 `AIMessage` 对象，源码如下：
 
 ```python title="chat_models.py"
 def invoke(
@@ -242,7 +246,7 @@ def invoke(
 ) -> AIMessage:
 ```
 
-举例：
+#### 举例：查看返回值类型
 
 ```python title="04.model-invoke.ipynb"
 response = model.invoke([HumanMessage(content="2+ 3 * 2 = ?")])
@@ -263,7 +267,7 @@ print(response)
 运行结果：
 
 ```
-content='8' additional_kwargs={'refusal': None, 'reasoning_content': 'We need answer simple arithmetic. Need obey order operations. 2 + 3*2 = 2+6=8. Need perhaps concise.'} response_metadata={'token_usage': {'completion_tokens': 32, 'prompt_tokens': 39, 'total_tokens': 71, 'completion_tokens_details': {'accepted_prediction_tokens': None, 'audio_tokens': None, 'reasoning_tokens': 30, 'rejected_prediction_tokens': None}, 'prompt_tokens_details': {'audio_tokens': None, 'cached_tokens': 0}, 'prompt_cache_hit_tokens': 0, 'prompt_cache_miss_tokens': 39}, 'model_provider': 'deepseek', 'model_name': 'deepseek-flash', 'system_fingerprint': 'e72d3c7f663d3e1383b00b3884cb4501', 'id': 'b3bfff10-cd0f-41ae-9d83-f36bdd472f7f', 'finish_reason': 'stop', 'logprobs': None} id='lc_run--01a15970-b935-77a0-8ed0-a380541fb5d8-0' tool_calls=[] invalid_tool_calls=[] usage_metadata={'input_tokens': 39, 'output_tokens': 32, 'total_tokens': 71, 'input_token_details': {'cache_read': 0}, 'output_token_details': {'reasoning': 30}}
+content='8' additional_kwargs={'refusal': None, 'reasoning_content': 'We need answer simple arithmetic. Need obey order operations. 2 + 3*2 = 2+6=8. Need perhaps concise.'} response_metadata={'token_usage': {'completion_tokens': 32, 'prompt_tokens': 39, 'total_tokens': 71, ...}, 'model_provider': 'deepseek', 'model_name': 'deepseek-flash', 'finish_reason': 'stop', ...} id='lc_run--01a15970-b935-77a0-8ed0-a380541fb5d8-0' tool_calls=[] invalid_tool_calls=[] usage_metadata={'input_tokens': 39, 'output_tokens': 32, 'total_tokens': 71, ...}
 ```
 
 `print()` 输出的是单行 repr，字段一多就挤成一片，很难阅读。借助 `rich` 的 `rprint()` 可以自动格式化打印（`rich` 已包含在依赖清单中）：
@@ -281,8 +285,7 @@ AIMessage(
     content='8',
     additional_kwargs={
         'refusal': None,
-        'reasoning_content': 'We need answer simple arithmetic. Need obey order operations. 2 + 3*2 = 2+6=8. Need 
-perhaps concise.'
+        'reasoning_content': 'We need answer simple arithmetic. Need obey order operations. 2 + 3*2 = 2+6=8. Need perhaps concise.'
     },
     response_metadata={
         'token_usage': {
@@ -319,7 +322,7 @@ perhaps concise.'
 )
 ```
 
-AIMessage 中包含丰富的信息。下面以本次输出为例逐字段说明——其中部分字段与供应商、模型相关，并非每次都会返回：
+AIMessage 中包含丰富的信息。下面以本次输出为例逐字段说明：凡标注为「部分供应商才返回」的字段，本次输出里并没有出现，它们取决于具体的供应商与模型。
 
 ```python
 AIMessage(
@@ -350,7 +353,7 @@ AIMessage(
             'prompt_cache_hit_tokens': 0,    # 命中缓存的输入 Token 数
             'prompt_cache_miss_tokens': 39,  # 未命中缓存的输入 Token 数
 
-            # --- 延迟性能监控（单位：毫秒 ms，部分供应商返回） ---
+            # --- 延迟性能监控（单位：毫秒 ms；部分供应商才返回，本次输出中未出现） ---
             'latency_checkpoint': {
                 'engine_tbt_ms': 4,          # 引擎 Token 间的平均间隔时间
                 'engine_ttft_ms': 36,        # 引擎生成首个 Token 的时间
@@ -367,7 +370,7 @@ AIMessage(
         'model_name': 'deepseek-flash',            # 使用的具体模型版本
         'system_fingerprint': 'e72d3c7f663d3e1383b00b3884cb4501',  # 系统指纹，用于追踪模型后端的配置变更
         'id': 'b3bfff10-cd0f-41ae-9d83-f36bdd472f7f',  # API 层面的响应 ID
-        'service_tier': 'default',                 # 服务层级（如按量付费或订阅，部分供应商返回）
+        'service_tier': 'default',                 # 服务层级（部分供应商才返回，本次输出中未出现）
         'finish_reason': 'stop',                   # 停止原因：stop（自然结束）、length（长度受限）
         'logprobs': None                           # 对数概率（通常用于分析词汇选择的可能性）
     },
@@ -396,107 +399,53 @@ AIMessage(
 )
 ```
 
-::: tip 总结
+日常最常用的是这几个字段：
 
-**1. 核心内容与基本信息**
+- 回答文本：`response.content`
+- 模型与供应商：`response.response_metadata["model_name"]` / `["model_provider"]`
+- Token 消耗：`response.usage_metadata`（标准化）或 `response.response_metadata["token_usage"]`（原始）
+- 结束原因：`response.response_metadata["finish_reason"]`（`stop` 正常、`length` 被截断）
+- 思考过程：`response.additional_kwargs["reasoning_content"]`（推理模型才有）
+- 工具调用：`response.tool_calls`
 
-- `content`: 模型生成的文本回答。这是你最关心的核心输出。
+其余字段（`latency_checkpoint`、`service_tier`、`logprobs` 等）见上面的逐字段注释，且并非每个供应商都会返回。
 
-- `id`: 本次运行在 LangChain 内部生成的唯一标识符（Run ID）。
-
-- `additional_kwargs`: 包含特定供应商的额外参数。
-
-  - `refusal`: 如果模型拒绝回答（涉及敏感政策），此处会显示拒绝原因。
-
-**2. 消耗统计 (Token Usage)**
-
-这部分决定了你这一行输入操作花了多少钱：
-
-- `prompt_tokens` / `input_tokens`: 输入 Token 数。你发送给模型的问题长度。
-
-- `completion_tokens` / `output_tokens`: 输出 Token 数。模型回答生成的长度。
-
-- `total_tokens`: 总消耗。 两者之和。
-
-- `reasoning_tokens`: 推理 Token 数。 如果是 O1/O3 等推理模型，这里会显示它在“思考”时消耗的 Token。
-
-- `cached_tokens`: 缓存命中的 Token 数。重复提问时，如果命中了模型商的缓存，这部分费用通常更低。
-
-**3. 响应元数据 (Response Metadata)**
-
-这部分是 API 返回的原始详细信息：
-
-- `model_name`: 实际调用的模型具体版本（如`gpt-5.4-mini`）。
-
-- `model_provider`: 模型供应商（如 `openai`）。
-
-- `finish_reason`: 生成停止的原因。
-
-  - `stop`: 正常回答结束。
-
-  - `length`: 达到最大 Token 限制被截断。
-
-- `system_fingerprint`: 系统指纹，用于追踪模型后端的配置变更。
-
-**4. 性能与延迟 (Latency Checkpoint)**
-
-这是针对 API 响应速度的深度拆解（单位通常为毫秒 **ms**）：
-
-- `total_duration_ms`: 总耗时。从请求发出到完全收到的总时间（259ms）。
-
-- `user_visible_ttft_ms`: 首字到达时间。用户看到第一个字跳出来等待的时间（194ms），这是体感快慢的关键。
-
-- `engine_ttft_ms`: 引擎层面的首字到达时间（36ms）。
-
-- `engine_ttlt_ms`: 引擎生成最后一个字的时间（100ms）。
-
-- `pre_inference_ms`: 推理前处理耗时。包括安全审核、Token 化等预处理（86ms）。
-
-- `service_tbt_ms`: Time Between Tokens。字与字之间生成的间隔时间，决定了打字机效果是否丝滑。
-
-**5. 工具调用信息**
-
-- `tool_calls`: 结构化工具调用列表。如果模型决定调用某个 Python 函数或搜索工具，参数会在这里。
-
-- `invalid_tool_calls`: 格式错误的工具调用尝试。
-:::
-
-举例: 获取所有字段
+#### 举例：获取常用字段
 
 ```python title="04.model-invoke.ipynb"
 response = model.invoke("用一句话解释什么是 AI")
 
 # 1. 获取回复内容
-print("AI 回复:", response.content)
+print("AI 回复：", response.content)
 
 # 2. 获取响应元数据
 metadata = response.response_metadata
-print(f"使用的模型: {metadata['model_name']}")
-print(f"结束原因: {metadata['finish_reason']}")
+print(f"使用的模型：{metadata['model_name']}")
+print(f"结束原因：{metadata['finish_reason']}")
 print(f"模型提供商：{metadata['model_provider']}\n")
 
 # 3. 获取 Token 使用情况
 usage = metadata.get('token_usage', {})
-print(f"输入 tokens: {usage.get('prompt_tokens')}")
-print(f"输出 tokens: {usage.get('completion_tokens')}")
-print(f"总计 tokens: {usage.get('total_tokens')}")
+print(f"输入 tokens：{usage.get('prompt_tokens')}")
+print(f"输出 tokens：{usage.get('completion_tokens')}")
+print(f"总计 tokens：{usage.get('total_tokens')}")
 
 # 4. 获取消息 ID
-print(f"消息 ID: {response.id}")
+print(f"消息 ID：{response.id}")
 ```
 
 运行结果：
 
 ```
-AI 回复: AI 是让计算机通过数据和算法模拟人类智能，从而进行感知、学习、推理和决策的技术。
-使用的模型: deepseek-flash
-结束原因: stop
+AI 回复：AI 是让计算机通过数据和算法模拟人类智能，从而进行感知、学习、推理和决策的技术。
+使用的模型：deepseek-flash
+结束原因：stop
 模型提供商：deepseek
 
-输入 tokens: 35
-输出 tokens: 96
-总计 tokens: 131
-消息 ID: lc_run--01a15980-5375-7ee1-9a97-3237255783d2-0
+输入 tokens：35
+输出 tokens：96
+总计 tokens：131
+消息 ID：lc_run--01a15980-5375-7ee1-9a97-3237255783d2-0
 ```
 
 ## 2.流式调用
@@ -505,31 +454,16 @@ AI 回复: AI 是让计算机通过数据和算法模拟人类智能，从而进
 
 - `invoke()`：同步调用，在模型输出完成后**一次性获取响应**，对于输出文本很长的场景，用户体验不好。
 
-- `stream()`：流式调用，**实时返回响应片段**。调用后，返回一个 `迭代器(iterator)`，可以通过循环来实时处理每一个新生成的chunk内容块。
+- `stream()`：流式调用，**实时返回响应片段**。调用后，返回一个 `iterator`（迭代器），可以通过循环来实时处理每一个新生成的chunk内容块。
 
 ::: warning 注意
 流式输出依赖于模型供应商对于流式输出的支持。
 :::
 
 ```python title="05.model-stream-batch.ipynb"
-from langchain.chat_models import init_chat_model
-from dotenv import load_dotenv
-
-import os
-
-load_dotenv(override=True)
-
-DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY")
-DEEPSEEK_BASE_URL = os.getenv("DEEPSEEK_BASE_URL")
-
-model = init_chat_model(
-    model="deepseek:deepseek-flash",
-    api_key=DEEPSEEK_API_KEY,
-    base_url=DEEPSEEK_BASE_URL
-)
-
+# 沿用 §1 中创建的 model；若单独运行，请先执行一次初始化（见 1.2.1）
 for chunk in model.stream("帮我解释一下什么是人工智能"):
-    print(chunk.text, end="", flush=True)   
+    print(chunk.text, end="", flush=True)
 ```
 
 输出不再是整段返回，而是流式输出。
@@ -552,7 +486,7 @@ batch() 方法允许你一次性 `发送一组请求`（含多条独立请求）
 
 ### 3.1 一次性接收所有响应
 
-batch() 特点是等待所有请求处理完毕，按原始输入顺序返回结果列表。
+batch() 的特点是等待所有请求处理完毕，按原始输入顺序返回结果列表。
 
 ```python title="05.model-stream-batch.ipynb"
 messages = [
@@ -579,7 +513,7 @@ for response in responses:
 
 当输入列表很大或单个模型调用耗时差异显著时， `batch_as_completed()` 允许应用在收到第一个结果后立即返回响应，而不会等待批次内所有任务完成才响应。即 batch_as_completed() 每个请求完成后立即 yield 结果， `结果可能乱序`。
 
-但是，每个返回的响应都被放在一个 `元组` 中，元组的第一个元素是原始输入的 index 索引，可根据索引重新排序。
+但是，每个返回的响应都被放在一个 `元组` 中，元组的第一个元素是原始输入的索引（index），可根据索引重新排序。
 
 ```python title="05.model-stream-batch.ipynb"
 messages = [
@@ -606,7 +540,7 @@ for response in responses:
 
 `batch()` 不只是「一次传入多个输入」这么简单——它在底层会**并发**地向模型服务发起请求；而用 `for` 循环逐个 `invoke()` 时，每个请求都要等上一个返回之后才开始。下面用同样的 4 条翻译任务，对比两者的耗时差异。
 
-#### 批量调用（高效）
+#### 3.3.1 批量调用（高效）
 
 ```python title="05.model-stream-batch.ipynb"
 # 准备多个输入
@@ -640,7 +574,7 @@ print(f"耗时: {batch_time:.2f}秒\n")
 耗时: 2.05秒
 ```
 
-#### 循环调用（低效，仅用于对比）
+#### 3.3.2 循环调用（低效，仅用于对比）
 
 ```python title="05.model-stream-batch.ipynb"
 inputs = [
@@ -676,7 +610,7 @@ print(f"批量调用节省: {((loop_time - batch_time) / loop_time * 100):.1f}%"
 批量调用节省: 52.1%
 ```
 
-同样的 4 条输入，批量调用 2.05 秒、循环调用 4.04 秒，耗时差不多减半。差距来自**并发**：`batch()` 会把多个请求同时发出去，总耗时大致等于「最慢的那一个」；循环则是串行，总耗时是「所有请求之和」。
+同样的 4 条输入，批量调用 2.05 秒、循环调用 4.28 秒，耗时差不多减半。差距来自**并发**：`batch()` 会把多个请求同时发出去，总耗时大致等于「最慢的那一个」；循环则是串行，总耗时是「所有请求之和」。
 
 ::: tip
 并发数可以显式控制：
@@ -711,7 +645,7 @@ print(f"批量调用节省: {((loop_time - batch_time) / loop_time * 100):.1f}%"
 
 ![同步与异步的类比：小明等小红一起走 vs 小明先走、小红随后追上](/assets/image/code/python/langchain/model/invocation/sync-vs-async-diagram.png)
 
-在LangChain框架中，异步方法（ainvoke、astream、abatch）与它们的同步版本（invoke、stream、batch）相比，具备如下特点：
+在 LangChain 框架中，异步方法（ainvoke、astream、abatch）与它们的同步版本（invoke、stream、batch）相比，具备如下特点：
 
 - `避免阻塞主线程`：同步调用会阻塞程序执行，而异步方法让应用程序在等待API响应时保持响应性。
 - `优化资源利用`：异步操作可以更高效地利用系统资源，减少空闲等待时间。
@@ -752,8 +686,7 @@ async def demo_async_invoke():
     print(">>> 模型请求已在后台发送，继续执行本地逻辑...")
     for i in range(3):
         await asyncio.sleep(1)  # 使用异步等待，释放控制权
-        print(f">>> 正在执行第{i + 1}个任务... (已耗时 {time.perf_counter() -
-                                                        start_time:.2f}s)")
+        print(f">>> 正在执行第{i + 1}个任务... (已耗时 {time.perf_counter() - start_time:.2f}s)")
 
     # 3. 获取模型结果
     print(">>> 本地任务完成，检查模型状态...")
@@ -825,9 +758,7 @@ async def demo_async_stream():
         # 使用 asyncio.sleep 而非 time.sleep
         # 这允许事件循环在等待时去处理上面的 stream_resp 网络 IO
         await asyncio.sleep(1)
-        # print(f">>> 正在执行并发任务 {i + 1}... ")
-        print(f">>> 正在执行第{i + 1}个任务... (已耗时 {time.perf_counter() -
-                                                        start_time:.2f}s)")
+        print(f">>> 正在执行第{i + 1}个任务... (已耗时 {time.perf_counter() - start_time:.2f}s)")
 
     # 3. 现在开始处理流式结果
     print(">>> 模拟任务已完成，开始读取缓冲区中的流式结果...")
@@ -908,8 +839,7 @@ async def demo_async_batch():
     for i in range(3):
         # 关键修改：使用 asyncio.sleep 允许后台任务获取 CPU 时间片进行网络请求
         await asyncio.sleep(1)
-        print(f">>> 正在执行第{i + 1}个任务... (已耗时 {time.perf_counter() -
-                                                        start_time:.2f}s)")
+        print(f">>> 正在执行第{i + 1}个任务... (已耗时 {time.perf_counter() - start_time:.2f}s)")
 
     # 3. 等待批量处理结果
     print(">>> 其他任务已完成，现在获取后台批量任务的结果...")
@@ -950,16 +880,34 @@ if __name__ == "__main__":
 
 ## 5.如何处理模型调用失败
 
-使用 try-except 块捕获异常：
+调用大模型本质上是发起一次网络请求，常见的失败有：触发限流（429）、连接超时或断网、服务端 5xx、以及模型名或密钥配错。用 try-except 捕获对应异常即可：
 
 ```python
+from openai import APIConnectionError, APIStatusError, RateLimitError
+
 try:
     response = model.invoke("Hello")
     print(response.content)
-except ValueError as e:
-    print(f"配置错误: {e}")
-except ConnectionError as e:
-    print(f"网络错误: {e}")
+except RateLimitError as e:
+    print(f"触发限流（HTTP {e.status_code}），稍后重试：{e}")
+except APIConnectionError as e:
+    print(f"连接失败（网络或代理问题）：{e}")
+except APIStatusError as e:
+    print(f"服务端返回错误（HTTP {e.status_code}）：{e}")
 except Exception as e:
-    print(f"未知错误: {e}")
+    print(f"其他错误：{e}")
 ```
+
+注意：`RateLimitError` 是 `APIStatusError` 的子类，必须写在它前面，否则会被上层分支先捕获。
+
+:::tip 更省心的做法
+底层 SDK 已内置重试，初始化时把这两个参数配好，大多数偶发失败会自动恢复：
+
+- `max_retries`：失败后的重试次数（不设则由 SDK 决定）
+- `timeout`：单次请求的超时时间（秒）
+
+```python
+model = init_chat_model("deepseek:deepseek-flash", max_retries=3, timeout=30)
+```
+:::
+
