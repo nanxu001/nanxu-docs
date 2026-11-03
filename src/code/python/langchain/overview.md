@@ -227,171 +227,22 @@ LangSmith 官网：https://www.langchain.com/langsmith
 
 LangSmith 的引入使得智能体的开发、调试与运维形成了完整的质量闭环。
 
-## 4.相关环境安装
+## 4.大模型应用场景介绍
 
-### 4.1 代码管理方案
+### 4.1 RAG 开发
 
-相较于**全局环境（系统环境）**，各个**虚拟环境**都有自己独立的一套：Python 解释器、pip 命令、第三方依赖包，不和其它项目产生干扰。
-
-![全局环境与各项目虚拟环境的隔离](/assets/image/code/python/langchain/overview/global-vs-virtual-env.png)
-
-虚拟环境的设置方案：
-
-**方案 1 使用 conda：适合“Python + 非 Python 依赖”的复杂环境**
-
-conda 不只是 Python 包管理工具，它还可以管理 Python 解释器、Python 包，以及很多非 Python 依赖，比如：**CUDA**、**编译器**、**系统库**、**数据库驱动**、**科学计算底层库**等非 Python 依赖。
-
-因此在数据科学、深度学习、AI 工程、科学计算等场景中，conda 更稳妥、优先推荐。
-
-注意：**conda 环境中可以使用 pip，但建议先用 conda 装底层依赖，再用 pip 补充 Python 包，不要随意反复交替使用**
-
-**方案 2 使用 uv：适合“纯 Python 项目”的现代包管理**
-
-uv 是一个现代 Python 包管理工具，主要管理 Python 生态依赖，不能像 conda 那样管理 CUDA、系统级数据库驱动、编译器这类通用非 Python 依赖。
-
-如果项目主要是普通 Python 开发，这类项目通常可以**优先考虑 uv**。例如：
-
-- FastAPI 项目
-- LangChain 项目
-- 脚本工具
-- Web 后端
-- 普通 AI Agent 应用
-- RAG 应用层代码
-
-**方案 3 使用 venv：Python 自带的轻量级虚拟环境工具**
-
-`venv` 是 Python 官方自带的虚拟环境工具，不需要额外安装。
-
-它的特点是简单、轻量：
-
-```cmd
-python -m venv .venv
-```
-
-**注意**： venv 不负责安装新的 Python 解释器，只能基于当前已经安装好的 Python 解释器创建虚拟环境。同时，venv 也不负责管理 CUDA、系统库等非 Python 依赖。
-
-**三者对比：**
-
-| 工具 | 管理 Python 解释器 | 管理 Python 包 | 管理非 Python 依赖 | 适合场景 |
-| :---: | :---: | :---: | :---: | :---: |
-| conda | ✅可以 | ✅可以 | ✅可以 | AI、深度学习、科学计算、复杂底层依赖（C/C++、CUDA） |
-| uv | ✅可以 | ✅可以 | ❌不可以 | 纯 Python 项目、Web、Agent、RAG 应用层 |
-| venv | 不支持原生安装，基于已有解释器 | ✅可以 | ❌不可以 | 简单项目、教学演示、轻量隔离 |
-
-按上表：LangChain 属于**纯 Python 项目**，uv 和 pip 都能装，conda 也能装；只有当同一个环境里还需要 CUDA、编译器这类非 Python 依赖时（比如后续要做本地模型推理），才应该优先用 conda。
-
-### 4.2 安装虚拟环境与 Python 解释器
-
-LangChain 基于 Python 开发，因此需确保系统中安装了 Python 解释器，我们在创建虚拟环境过程中安装 Python 解释器。
-
-LangChain 1.2 要求 Python 3.10 及以上，这里使用 `Python 3.13.12`。
-
-#### 4.2.1 创建 Conda 环境
-
-```cmd
-# 创建一个名为langchain1.2的环境，指定Python版本是3.13.12
-conda create --name langchain1.2 python=3.13.12
-
-# 查看Anaconda安装好的python环境
-conda env list
-
-# 初始化虚拟环境 (执行完此指令，重新启动命令行窗口)
-conda init
-
-# 在命令行窗口切换到某python环境
-conda activate langchain1.2
-
-# 验证python版本
-python --version
-Python 3.13.12
-```
-
-#### 4.2.2 退出/删除 Conda 环境
-
-```cmd
-# 在命令行退出当前python环境
-conda deactivate
-
-# 删除一个已有的Anaconda管理的python环境
-conda remove --name langchain1.2 --all
-```
-
-### 4.3 下载 LangChain 安装包
-
-#### 4.3.1 使用 conda 指令
-
-```cmd
-# 安装指定版本。比如 1.2.12
-conda install langchain==1.2.12
-
-# 或者安装最新版（默认仓库）
-conda install langchain
-
-# 指定频道（如 conda-forge）
-conda install -c conda-forge langchain==1.2.12
-
-# 更新包
-conda update langchain
-
-# 卸载包
-conda uninstall langchain
-
-# 查看已安装包
-conda list
-```
-
-:::info 说明
-conda 包通常来自 defaults 或 conda-forge。
-
-- `-c`：是 `--channel` 的缩写，conda 用于指定包的安装来源渠道。
-- `conda-forge`：该源比官方默认渠道更新更快、包更全。
-:::
-
-#### 4.3.2 使用 pip 指令
-
-```cmd
-# 安装指定版本
-pip install langchain==1.2.12
-
-# 安装最新版（不推荐）：pip install langchain
-# 使用指定源：国内镜像加速 （解决下载慢）  -i：指定镜像源
-pip install langchain==1.2.12 -i https://pypi.tuna.tsinghua.edu.cn/simple
-
-# 从旧版本升级到新版本
-pip install --upgrade langchain
-#或者 pip install -U langchain==1.2.12
-
-# 卸载包
-pip uninstall langchain
-
-# 查看已安装包
-pip list
-```
-
-**建议：LangChain 本身是纯 Python 包，`pip install`（或 uv）最省事；只有当你还需要同一环境里的 CUDA、编译器这类非 Python 依赖时，才优先用 `conda install`。**
-
-:::info conda 与 pip 的分工
-conda 依赖检查严格，pip 相对宽松；
-conda 管环境 + 依赖 + 稳定性，pip 只管 Python 包；
-conda：支持 Python 包 + 非 Python 包；pip：只支持 Python 包。
-:::
-
-## 5.大模型应用场景介绍
-
-### 5.1 RAG 开发
-
-#### 5.1.1 背景
+#### 4.1.1 背景
 
 - **大模型的知识冻结**：随着 LLM 规模扩大，训练成本与周期相应增加，模型**无法实时学习**到最新信息或动态变化，因而难以应对“请推荐现在的热门影片”这类时间敏感的问题。
 - **大模型幻觉**：涉及模型从未在训练过程中学习过的信息时，它给不出准确答复，转而开始臆想和编造答案。
 
-#### 5.1.2 一个直观的例子
+#### 4.1.2 一个直观的例子
 
 LLM 在考试时面对陌生领域，答复能力有限，正准备“放飞自我”，此时 RAG 给了一些提示和思路，让 LLM 开始往这个方向作答，最终正确率从 60% 提升到 90%。
 
 ![RAG 把答题正确率从 60% 提升到 90%](/assets/image/code/python/langchain/overview/rag-accuracy-improvement.png)
 
-#### 5.1.3 何为 RAG？
+#### 4.1.3 何为 RAG？
 
 Retrieval-Augmented Generation（检索增强生成）：先从外部知识库**检索**相关资料，再把资料作为上下文**增强**进提示词，最后让模型基于这些上下文**生成**答案。
 
@@ -419,7 +270,7 @@ RAG 落地过程中的四个难点：**文件解析、文件切割、知识检�
 - 不适合：引入 reranker 会增加召回时间与检索延迟，服务对**响应时间**要求高时可能不合适。
 :::
 
-### 5.2 Agent 开发
+### 4.2 Agent 开发
 
 充分利用 LLM 的推理决策能力，再加上规划、记忆与工具调用，构造一个能够独立思考、逐步完成给定目标的 Agent（智能体）。
 
@@ -445,11 +296,11 @@ OpenAI 的元老翁丽莲（Lilian Weng）于 2023 年 6 月在[个人博客](ht
 
 智能体的核心要素可细化为以下模块：
 
-#### 5.2.1 大模型（LLM）作为“大脑”
+#### 4.2.1 大模型（LLM）作为“大脑”
 
 提供推理、规划与知识理解能力，是 AI Agent 的决策中枢。大脑主要由大型语言模型 LLM 组成，承担信息处理与决策，并能呈现推理和规划的过程，因而能较好地应对未知任务。
 
-#### 5.2.2 规划决策（Planning）
+#### 4.2.2 规划决策（Planning）
 
 通过任务分解、反思与自省框架实现复杂任务处理。例如利用思维链（Chain of Thought）把目标拆解为子任务，再依据反馈优化策略。
 
@@ -457,13 +308,13 @@ OpenAI 的元老翁丽莲（Lilian Weng）于 2023 年 6 月在[个人博客](ht
 
 ![秘塔的研究过程：把复杂问题拆解成可执行的步骤](/assets/image/code/python/langchain/overview/metaso-task-decomposition.png)
 
-#### 5.2.3 工具使用（Tool Use）
+#### 4.2.3 工具使用（Tool Use）
 
 调用外部工具（如 API、数据库）扩展能力边界。
 
 ![机器人借助工具完成任务：LLM 是大脑，工具是手脚](/assets/image/code/python/langchain/overview/tool-use-robot-analogy.png)
 
-#### 5.2.4 记忆（Memory）
+#### 4.2.4 记忆（Memory）
 
 智能体像人一样，能留存学到的知识以及交互习惯，处理重复工作时可以调用以往经验，从而避免用户进行大量重复交互。
 
@@ -476,22 +327,22 @@ OpenAI 的元老翁丽莲（Lilian Weng）于 2023 年 6 月在[个人博客](ht
 ChatGPT 约 8k token → GPT-4 约 32k token → 最新的很多大模型：OpenAI GPT-5.5 / GPT-5.4 Pro 支持 100 万 Token（1M）、Anthropic Claude Opus 4.7 支持 200 万 Token、DeepSeek-V4-Pro 支持 100 万 Token，甚至有模型支持 1000 万 token（相当于 2000 万字文本或 20 小时视频）。
 :::
 
-#### 5.2.5 行动（Action）
+#### 4.2.5 行动（Action）
 
 实际执行决策的模块，涵盖软件接口操作（如自动订票）与物理交互（如机器人执行搬运），也包括检索、推理、编程等。
 
 > 智能体会形成完整的计划流程：先读取以往工作的经验与记忆，再规划子目标并调用相应工具处理问题，最后输出给用户并完成反思。
 
-### 5.3 大模型应用开发的 4 个场景
+### 4.3 大模型应用开发的 4 个场景
 
-#### 5.3.1 纯 Prompt
+#### 4.3.1 纯 Prompt
 
 - Prompt 是操作大模型的唯一接口
 - 当人看：你说一句，ta 回一句，你再说一句，ta 再回一句……
 
 ![纯 Prompt：一问一答](/assets/image/code/python/langchain/overview/pure-prompt-response-flow.png)
 
-#### 5.3.2 Agent + Function Calling
+#### 4.3.2 Agent + Function Calling
 
 - Agent：AI 主动提要求
 - Function Calling：需要对接外部系统时，AI 要求执行某个函数
@@ -499,7 +350,7 @@ ChatGPT 约 8k token → GPT-4 约 32k token → 最新的很多大模型：Open
 
 ![Agent + Function Calling：AI 主动调用外部函数](/assets/image/code/python/langchain/overview/agent-function-calling-flow.png)
 
-#### 5.3.3 RAG（Retrieval-Augmented Generation）
+#### 4.3.3 RAG（Retrieval-Augmented Generation）
 
 RAG：需要补充领域知识时使用。
 
@@ -513,7 +364,7 @@ RAG：需要补充领域知识时使用。
 
 这个在智能客服上用的最广泛。
 
-#### 5.3.4 Fine-tuning（精调/微调）
+#### 4.3.4 Fine-tuning（精调/微调）
 
 举例：努力学习考试内容，长期记住，活学活用。
 
@@ -521,7 +372,7 @@ RAG：需要补充领域知识时使用。
 
 特点：成本最高；在前面的方式解决不了问题的情况下，再使用。
 
-### 5.4 如何选择相关技术
+### 4.4 如何选择相关技术
 
 面对一个需求，如何开始，如何选择技术方案？下面是个常用思路：
 
